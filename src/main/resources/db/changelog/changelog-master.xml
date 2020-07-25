@@ -17,8 +17,8 @@
 		
         <createTable tableName="ACTION">
         
-        	<column name="id" type="BIGINT(20)">
-            	<constraints nullable="false"/>
+        	<column name="id" type="BIGINT(20)" autoIncrement="true">
+            	<constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="main_class" type="varchar(255)">
             	<constraints nullable="true"/>
@@ -35,13 +35,8 @@
            
         </createTable>
        <createIndex tableName="ACTION" indexName="ACTION_IDX">
-			<column name="id" />
+			<column name="id"/>
 		</createIndex>
-		<addPrimaryKey
-	        columnNames="id"
-	        constraintName="ACTION_PK"
-	        tableName="ACTION"
-	        />
 	</changeSet>
 	<changeSet id="2" author="${author}" >
         <preConditions onFail="MARK_RAN">
@@ -49,8 +44,8 @@
 		</preConditions>
 		
         <createTable tableName="FIU">
-            <column name="id" type="BIGINT(20)">
-            	<constraints nullable="false"/>
+            <column name="id" type="BIGINT(20)" autoIncrement="true">
+            	<constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="name" type="varchar(255)" >
             <constraints nullable="true"/>
@@ -65,11 +60,6 @@
        <createIndex tableName="FIU" indexName="FIU_IDX">
 			<column name="id" />
 		</createIndex>
-		<addPrimaryKey
-	        columnNames="id"
-	        constraintName="FIU_PK"
-	        tableName="FIU"
-	        />
 	</changeSet>
 	<changeSet id="3" author="${author}" >
         <preConditions onFail="MARK_RAN">
@@ -77,8 +67,8 @@
 		</preConditions>
 		
         <createTable tableName="EXECUTION">
-            <column name="id" type="BIGINT(20)">
-            	<constraints nullable="false"/>
+            <column name="id" type="BIGINT(20)" autoIncrement="true">
+            	<constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="activation_id" type="varchar(255)" >
             <constraints nullable="false"/>
@@ -105,11 +95,6 @@
 			<column name="action_id" />
 			<column name="fiu_id" />
 		</createIndex>
-		<addPrimaryKey
-	        columnNames="id"
-	        constraintName="EXECUTION_PK"
-	        tableName="EXECUTION"
-	        />
 	        <addForeignKeyConstraint baseColumnNames="FIU_ID"
              baseTableName="EXECUTION"
              constraintName="fk_fiu_id"
@@ -147,4 +132,14 @@
 	        />
 	        
 	</changeSet>
+	<changeSet id="5" author="${author}" >
+            <preConditions onFail="MARK_RAN" >          
+                      <not><columnExists tableName="FIU" columnName="apikey" /></not>
+            </preConditions>
+            <addColumn tableName="FIU">
+        <column name="apikey" type="varchar(255)"/>
+       
+    </addColumn> 
+</changeSet>
+	
 </databaseChangeLog>

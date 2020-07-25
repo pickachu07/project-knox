@@ -19,7 +19,7 @@ public class FIU {
 
 	
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "id")
     private Long id;
 	
@@ -29,6 +29,19 @@ public class FIU {
 	@Column(name = "username")
 	private String username;
 	
+	@Column(name = "apikey")
+	private String apiKey;
+	
+	
+	
+	public String getApiKey() {
+		return apiKey;
+	}
+
+	public void setApiKey(String apiKey) {
+		this.apiKey = apiKey;
+	}
+
 	public String getUsername() {
 		return username;
 	}
