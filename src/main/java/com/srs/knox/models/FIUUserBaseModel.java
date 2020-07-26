@@ -1,9 +1,17 @@
 package com.srs.knox.models;
 
 public class FIUUserBaseModel {
-	
 	private String username;
 	private String password;
+	private String fiuId;
+
+	public String getFiuId() {
+		return fiuId;
+	}
+
+	public void setFiuId(String fiuId) {
+		this.fiuId = fiuId;
+	}
 
 	public String getUsername() {
 		return username;
@@ -21,4 +29,3 @@ public class FIUUserBaseModel {
 		this.password = password;
 	}
 }
-

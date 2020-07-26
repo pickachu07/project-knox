@@ -7,6 +7,7 @@ import com.srs.knox.models.FIU;
 
 @Repository
 public interface FIURepo extends CrudRepository<FIU, Integer>{
-	FIU findByUsername(String username);
+	FIU findByUsername(String username);	
+	FIU findByName(String name);
 	FIU findById(long id);
 }

@@ -1,13 +1,10 @@
 package com.srs.knox.models;
 
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -27,6 +24,17 @@ public class FIU {
 	@Column(name = "username")
 	private String username;
 	
+	@Column(name = "apikey")
+	private String apiKey;
+	
+	public String getApiKey() {
+		return apiKey;
+	}
+
+	public void setApiKey(String apiKey) {
+		this.apiKey = apiKey;
+	}
+
 	public String getUsername() {
 		return username;
 	}
@@ -38,9 +46,6 @@ public class FIU {
 	@JsonIgnore
 	@Column(name = "password")
 	private String password;
-	
-//	@OneToMany
-//	List<Action> actions;
 	
 	public FIU() {
 		super();
@@ -72,8 +77,4 @@ public class FIU {
 	public Long getId() {
 		return id;
 	}
-
-//	public List<Action> getActions() {
-//		return actions;
-//	}
 }

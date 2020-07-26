@@ -38,13 +38,21 @@ public class FIUService implements UserDetailsService{
 	}
 	
 	
-	public FIU save(FIUUserBaseModel fiu) {
+	public FIU save(FIUUserBaseModel fiu,String apiKey) {
 		FIU newFIU = new FIU();
 		newFIU.setUsername(fiu.getUsername());
 		newFIU.setPassword(bcryptEncoder.encode(fiu.getPassword()));
+		newFIU.setApiKey(apiKey);
 		return fiuRepo.save(newFIU);
 	}
 
+	public boolean isNameUnique(String name) {
+		FIU fiu = fiuRepo.findByName(name);
+		if(fiu == null) {
+			return true;
+		}
+		return false;
+	}
 }
 
 
