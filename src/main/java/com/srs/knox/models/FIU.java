@@ -12,14 +12,12 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-
 @Entity
 @Table(name="FIU")
 public class FIU {
 
-	
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
     private Long id;
 	
@@ -41,8 +39,8 @@ public class FIU {
 	@Column(name = "password")
 	private String password;
 	
-	@OneToMany
-	List<Action> actions;
+//	@OneToMany
+//	List<Action> actions;
 	
 	public FIU() {
 		super();
@@ -75,9 +73,7 @@ public class FIU {
 		return id;
 	}
 
-	public List<Action> getActions() {
-		return actions;
-	}
-	
-	
+//	public List<Action> getActions() {
+//		return actions;
+//	}
 }

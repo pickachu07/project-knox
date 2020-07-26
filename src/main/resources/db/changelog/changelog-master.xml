@@ -8,19 +8,26 @@
    http://www.liquibase.org/xml/ns/dbchangelog 
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
      
-     <property name="author" value="Subhodip"/>
+    <property name="author" value="Subhodip"/>
       
     <changeSet id="1" author="${author}" >
         <preConditions onFail="MARK_RAN">
 			<not><tableExists  tableName="ACTION" /></not>
-		</preConditions>
-		
-        <createTable tableName="ACTION">
-        
-        	<column name="id" type="BIGINT(20)">
+		</preConditions>		
+        <createTable tableName="ACTION">       
+        	<column name="id" type="BIGINT(20)" autoIncrement="true">
+            	<constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="fiuid" type="BIGINT(20)">
             	<constraints nullable="false"/>
             </column>
-            <column name="main_class" type="varchar(255)">
+            <column name="main" type="varchar(255)">
+            	<constraints nullable="true"/>
+            </column>
+            <column name="code" type="varchar(255)">
+            	<constraints nullable="true"/>
+            </column>
+            <column name="runtime" type="varchar(255)">
             	<constraints nullable="true"/>
             </column>
             <column name="memory" type="int(11)" >
@@ -32,25 +39,18 @@
             <column name="timeout" type="int(11)" >
             	<constraints nullable="true"/>
             </column>
-           
         </createTable>
        <createIndex tableName="ACTION" indexName="ACTION_IDX">
-			<column name="id" />
+			<column name="id"/>
 		</createIndex>
-		<addPrimaryKey
-	        columnNames="id"
-	        constraintName="ACTION_PK"
-	        tableName="ACTION"
-	        />
 	</changeSet>
 	<changeSet id="2" author="${author}" >
         <preConditions onFail="MARK_RAN">
-			<not><tableExists  tableName="FIU" /></not>
-		</preConditions>
-		
+			<not><tableExists tableName="FIU"/></not>
+		</preConditions>	
         <createTable tableName="FIU">
-            <column name="id" type="BIGINT(20)">
-            	<constraints nullable="false"/>
+            <column name="id" type="BIGINT(20)" autoIncrement="true">
+            	<constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="name" type="varchar(255)" >
             <constraints nullable="true"/>
@@ -63,22 +63,16 @@
             </column>      
         </createTable>
        <createIndex tableName="FIU" indexName="FIU_IDX">
-			<column name="id" />
+			<column name="id"/>
 		</createIndex>
-		<addPrimaryKey
-	        columnNames="id"
-	        constraintName="FIU_PK"
-	        tableName="FIU"
-	        />
 	</changeSet>
 	<changeSet id="3" author="${author}" >
         <preConditions onFail="MARK_RAN">
-			<not><tableExists  tableName="EXECUTION" /></not>
-		</preConditions>
-		
+			<not><tableExists  tableName="EXECUTION"/></not>
+		</preConditions>		
         <createTable tableName="EXECUTION">
-            <column name="id" type="BIGINT(20)">
-            	<constraints nullable="false"/>
+            <column name="id" type="BIGINT(20)" autoIncrement="true">
+            	<constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="activation_id" type="varchar(255)" >
             <constraints nullable="false"/>
@@ -97,54 +91,30 @@
             </column>
             <column name="fiu_id" type="BIGINT(20)">
             	<constraints nullable="false"/>
-            </column>
-            
+            </column>        
         </createTable>
        <createIndex tableName="EXECUTION" indexName="EXECUTION_IDX">
 			<column name="id" />
 			<column name="action_id" />
 			<column name="fiu_id" />
 		</createIndex>
-		<addPrimaryKey
-	        columnNames="id"
-	        constraintName="EXECUTION_PK"
-	        tableName="EXECUTION"
-	        />
 	        <addForeignKeyConstraint baseColumnNames="FIU_ID"
              baseTableName="EXECUTION"
              constraintName="fk_fiu_id"
              referencedColumnNames="id"
-             referencedTableName="FIU"
-           	/>
+             referencedTableName="FIU"/>
            <addForeignKeyConstraint baseColumnNames="ACTION_ID"
           baseTableName="EXECUTION"
           constraintName="fk_action_id"
           referencedColumnNames="id"
-          referencedTableName="ACTION"
-           />
+          referencedTableName="ACTION"/>
 	</changeSet>
 	<changeSet id="4" author="${author}" >
-        <preConditions onFail="MARK_RAN">
-			<not><tableExists  tableName="FIU_ACTIONS" /></not>
-		</preConditions>
-		
-        <createTable tableName="FIU_ACTIONS">
-            <column name="id" type="varchar(255)">
-            	<constraints nullable="false"/>
-            </column>
-            <column name="action_id" type="varchar(255)" >
-            <constraints nullable="false"/>
-            </column>
-            
-        </createTable>
-       <createIndex tableName="FIU_ACTIONS" indexName="FIU_ACTIONS_IDX">
-			<column name="id" />
-		</createIndex>
-		<addPrimaryKey
-	        columnNames="id"
-	        constraintName="FIU_ACTIONS_PK"
-	        tableName="FIU_ACTIONS"
-	        />
-	        
-	</changeSet>
+            <preConditions onFail="MARK_RAN" >          
+            	<not><columnExists tableName="FIU" columnName="apikey"/></not>
+            </preConditions>
+            <addColumn tableName="FIU">
+        <column name="apikey" type="varchar(255)"/>
+    </addColumn> 
+</changeSet>
 </databaseChangeLog>
