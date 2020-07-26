@@ -10,16 +10,26 @@ import javax.persistence.Table;
 @Entity
 @Table(name="ACTION")
 public class Action {
+
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
-    private Long id;
+    private long id;
+	
+	@Column(name = "fiuid")
+    private long fiuid;
 
 	@Column(name = "name")
 	private String name;
 	
-	@Column(name = "main_class")
-	private String mainClass;
+	@Column(name = "code")
+	private String code;
+	
+	@Column(name = "main")
+	private String main;
+	
+	@Column(name = "runtime")
+	private String runtime;
 	
 	@Column(name = "timeout")
 	private int timeout;
@@ -27,12 +37,28 @@ public class Action {
 	@Column(name = "memory")
 	private int memory;
 
-	public Action(String name, String mainClass, int timeout, int memory) {
+	public Action(long fiuid, String name, String main, String code, String runtime, int timeout, int memory) {
 		super();
+		this.fiuid = fiuid;
 		this.name = name;
-		this.mainClass = mainClass;
+		this.code = code;
+		this.main = main;
+		this.runtime = runtime;
 		this.timeout = timeout;
 		this.memory = memory;
+	}
+	
+	public Action() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	
+	public long getFiuid() {
+		return fiuid;
+	}
+
+	public void setFiuid(long fiuid) {
+		this.fiuid = fiuid;
 	}
 
 	public String getName() {
@@ -43,12 +69,28 @@ public class Action {
 		this.name = name;
 	}
 
-	public String getMainClass() {
-		return mainClass;
+	public String getMain() {
+		return main;
 	}
 
-	public void setMainClass(String mainClass) {
-		this.mainClass = mainClass;
+	public void setMain(String main) {
+		this.main = main;
+	}
+	
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public String getRuntime() {
+		return runtime;
+	}
+
+	public void setRuntime(String runtime) {
+		this.runtime = runtime;
 	}
 
 	public int getTimeout() {
@@ -67,8 +109,7 @@ public class Action {
 		this.memory = memory;
 	}
 
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
-
 }

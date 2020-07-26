@@ -41,5 +41,4 @@ public class HashMapConverter implements AttributeConverter<Map<String, Object>,
  
         return outputObject;
     }
- 
 }

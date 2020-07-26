@@ -18,17 +18,15 @@ import javax.persistence.Table;
 
 import com.srs.knox.utils.HashMapConverter;
 
-
 @Entity
 @Table(name="EXECUTION")
 public class Execution {
 	
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 	
-
 	@OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "action_id", referencedColumnName = "id")
 	private Action action;
@@ -114,6 +112,4 @@ public class Execution {
 	public Long getId() {
 		return id;
 	}
-	
-	
 }
