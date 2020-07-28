@@ -2,79 +2,114 @@ package com.srs.knox.models;
 
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.UUID;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import com.srs.knox.utils.HashMapConverter;
+import com.srs.knox.utils.UUIDAttributeConverter;
 
 @Entity
 @Table(name="EXECUTION")
 public class Execution {
 	
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "id", updatable = false, nullable = false, unique = true)
+	@Convert(converter = UUIDAttributeConverter.class)
+    private UUID id;
+
+	@Column(name = "status")
+	@Enumerated(EnumType.STRING)
+	private Status status;
 	
-	@OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "action_id", referencedColumnName = "id")
-	private Action action;
+	@Column(name = "fiuid")
+	private long fiuid;
 	
-	@OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "fiu_id", referencedColumnName = "id")
-	private FIU fiu;
+	@Column(name = "actionid")
+	private long actionid;
 	
-	@Column(name = "activation_id")
+	@Column(name = "fisessionid")
+	private String fisessionid;
+
+	@Column(name = "activationid")
 	private String activationId;
 	
 	@Convert(converter = HashMapConverter.class)
 	private Map<String, Object> output;
 	
-	@Column(name = "status")
-	@Enumerated(EnumType.STRING)
-	private Status status;
+	@Column(name = "ttl")
+	private long ttl;
 	
-	@Column(name = "timestamp")
-	private LocalDateTime timestamp;
-
-	public Execution(Action action, FIU fiu, Status status, LocalDateTime timestamp) {
-		super();
-		this.action = action;
-		this.fiu = fiu;
-		this.status = status;
-		this.timestamp = timestamp;
-	}
-
+	@Column(name = "lastupdated")
+	private LocalDateTime lastupdated;
+	
+	@Column(name = "archived")
+	private boolean archived;
+	
 	public Execution() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-
-	public Action getAction() {
-		return action;
+	
+	public Execution(Status status, long fiuid, long actionid, String fisessionid, LocalDateTime lastupdated) {
+		super();
+		this.status = status;
+		this.fiuid = fiuid;
+		this.actionid = actionid;
+		this.fisessionid = fisessionid;
+		this.lastupdated = lastupdated;
+		this.archived = false;
 	}
 
-	public void setAction(Action action) {
-		this.action = action;
+	public UUID getId() {
+		return id;
 	}
 
-	public FIU getFiu() {
-		return fiu;
+	public void setId(UUID id) {
+		this.id = id;
 	}
 
-	public void setFiu(FIU fiu) {
-		this.fiu = fiu;
+	public Status getStatus() {
+		return status;
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+
+	public long getFiuid() {
+		return fiuid;
+	}
+
+	public void setFiuid(long fiuid) {
+		this.fiuid = fiuid;
+	}
+
+	public long getActionid() {
+		return actionid;
+	}
+
+	public void setActionid(long actionid) {
+		this.actionid = actionid;
+	}
+	
+	public String getFisessionid() {
+		return fisessionid;
+	}
+
+	public void setFisessionid(String fisessionid) {
+		this.fisessionid = fisessionid;
 	}
 
 	public String getActivationId() {
@@ -93,23 +128,27 @@ public class Execution {
 		this.output = output;
 	}
 
-	public Status getStatus() {
-		return status;
+	public long getTtl() {
+		return ttl;
 	}
 
-	public void setStatus(Status status) {
-		this.status = status;
+	public void setTtl(long ttl) {
+		this.ttl = ttl;
 	}
 
-	public LocalDateTime getTimestamp() {
-		return timestamp;
+	public LocalDateTime getLastUpdated() {
+		return lastupdated;
 	}
 
-	public void setTimestamp(LocalDateTime timestamp) {
-		this.timestamp = timestamp;
+	public void setLastUpdated(LocalDateTime lastupdated) {
+		this.lastupdated = lastupdated;
 	}
 
-	public Long getId() {
-		return id;
+	public boolean isArchived() {
+		return archived;
+	}
+
+	public void setArchived(boolean archived) {
+		this.archived = archived;
 	}
 }

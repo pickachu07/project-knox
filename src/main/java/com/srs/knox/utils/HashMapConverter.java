@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@Converter
 public class HashMapConverter implements AttributeConverter<Map<String, Object>, String> {
 	 
 	Logger logger = LoggerFactory.getLogger(HashMapConverter.class);

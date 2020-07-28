@@ -1,5 +1,10 @@
 package com.srs.knox.models;
 
 public enum Status {
-	SUCCESS,FAILURE,WAITING
+	DATA_PENDING,
+	DATA_READY,
+	EXECUTED,
+	OUTPUT_READY,
+	OUTPUT_FETCHED,
+	EXPIRED
 }
