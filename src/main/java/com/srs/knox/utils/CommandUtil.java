@@ -17,7 +17,7 @@ public class CommandUtil {
 		
 		UserCreationStatus status = new UserCreationStatus();
         // Windows
-        processBuilder.command("cmd.exe", "/c", "kubectl -n openwhisk  -ti exec owdev-wskadmin -- wskadmin user create "+username);
+        processBuilder.command("cmd.exe", "/c", "kubectl -n openwhisk  -ti exec owdev-wskadmin -- wskadmin user create " + username);
 
         try {
 
@@ -42,7 +42,4 @@ public class CommandUtil {
         }
 		return status;
 	}
-	
-	
-	
 }

@@ -19,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Strings;
 import com.srs.knox.action.utils.CreateActionRequest;
 import com.srs.knox.action.utils.CreateActionResponse;
 import com.srs.knox.action.utils.Exec;
@@ -29,6 +30,7 @@ import com.srs.knox.models.Action;
 import com.srs.knox.models.FIU;
 import com.srs.knox.repositories.ActionRepo;
 import com.srs.knox.repositories.FIURepo;
+import com.srs.knox.utils.KnoxException;
 import com.srs.knox.utils.OWException;
 import com.srs.knox.utils.RestTemplateGenerator;
 
@@ -48,7 +50,17 @@ public class ActionService {
 	Logger logger = LoggerFactory.getLogger(ActionService.class);
 	
 	public CreateActionResponse createAction(CreateActionRequest requestBody, String key)throws Exception {
+		if(Strings.isNullOrEmpty(key)) {
+			throw new OWException(HttpStatus.FORBIDDEN, "Invalid API Key.");
+		}
 		String [] auth = key.split(":");
+		if(Strings.isNullOrEmpty(requestBody.getFiuid())) {
+			throw new KnoxException(HttpStatus.BAD_REQUEST, "FIU ID is required.");
+		} else if(Strings.isNullOrEmpty(requestBody.getActionname())) {
+			throw new KnoxException(HttpStatus.BAD_REQUEST, "Action name is required.");
+		} else if(Strings.isNullOrEmpty(requestBody.getCode())) {
+			throw new KnoxException(HttpStatus.BAD_REQUEST, "Code is required.");
+		}
 		OWActionRequest body = new OWActionRequest();
 		Exec exec = new Exec();
 		Limits limits = new Limits();
@@ -83,6 +95,8 @@ public class ActionService {
 				if(response.getStatusCode() == HttpStatus.OK) {
 					successResponse = new ObjectMapper().readValue(response.getBody(), OWActionResponse.class);
 				}
+			} else {
+				throw new KnoxException(HttpStatus.NOT_FOUND, "FIU not found.");
 			}
 			if(successResponse != null) {
 				Action newAction = new Action(fiuRecord.getId(),

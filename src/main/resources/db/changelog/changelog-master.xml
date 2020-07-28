@@ -31,16 +31,16 @@
             	<constraints nullable="true"/>
             </column>
             <column name="memory" type="int(11)" >
-            <constraints nullable="true"/>
+            	<constraints nullable="true"/>
             </column>
             <column name="name" type="varchar(255)" >
-			<constraints nullable="true"/>
+				<constraints nullable="true"/>
             </column>
             <column name="timeout" type="int(11)" >
             	<constraints nullable="true"/>
             </column>
         </createTable>
-       <createIndex tableName="ACTION" indexName="ACTION_IDX">
+       	<createIndex tableName="ACTION" indexName="ACTION_IDX">
 			<column name="id"/>
 		</createIndex>
 	</changeSet>
@@ -53,16 +53,19 @@
             	<constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="name" type="varchar(255)" >
-            <constraints nullable="true"/>
+            	<constraints nullable="true"/>
             </column>
             <column name="username" type="varchar(255)" >
-            <constraints nullable="false"/>
+            	<constraints nullable="false"/>
             </column>  
             <column name="password" type="varchar(255)" >
-            <constraints nullable="false"/>
-            </column>      
+            	<constraints nullable="false"/>
+            </column>  
+            <column name="apikey" type="varchar(255)" >
+            	<constraints nullable="true"/>
+            </column>    
         </createTable>
-       <createIndex tableName="FIU" indexName="FIU_IDX">
+       	<createIndex tableName="FIU" indexName="FIU_IDX">
 			<column name="id"/>
 		</createIndex>
 	</changeSet>
@@ -71,50 +74,39 @@
 			<not><tableExists  tableName="EXECUTION"/></not>
 		</preConditions>		
         <createTable tableName="EXECUTION">
-            <column name="id" type="BIGINT(20)" autoIncrement="true">
+            <column name="id" type="binary(16)" >
             	<constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="activation_id" type="varchar(255)" >
-            <constraints nullable="false"/>
+            <column name="status" type="varchar(255)" >
+            	<constraints nullable="false"/>
+            </column>
+            <column name="fiuid" type="BIGINT(20)">
+            	<constraints nullable="false"/>
+            </column>
+            <column name="actionid" type="BIGINT(20)">
+            	<constraints nullable="false"/>
+            </column> 
+            <column name="fisessionid" type="varchar(255)" >
+            	<constraints nullable="false"/>
+            </column>
+            <column name="activationid" type="varchar(255)" >
+            	<constraints nullable="true"/>
             </column>
             <column name="output" type="varchar(255)" >
-            <constraints nullable="false"/>
+            	<constraints nullable="true"/>
             </column>
-            <column name="status" type="varchar(255)" >
-            <constraints nullable="false"/>
+            <column name="ttl" type="int(11)" >
+            	<constraints nullable="true"/>
             </column>
-            <column name="timestamp" type="DATETIME">
+            <column name="lastupdated" type="DATETIME">
             	<constraints nullable="false"/>
-            </column>
-            <column name="action_id" type="BIGINT(20)">
+            </column>  
+            <column name="archived" type="boolean">
             	<constraints nullable="false"/>
-            </column>
-            <column name="fiu_id" type="BIGINT(20)">
-            	<constraints nullable="false"/>
-            </column>        
+            </column>     
         </createTable>
-       <createIndex tableName="EXECUTION" indexName="EXECUTION_IDX">
+       	<createIndex tableName="EXECUTION" indexName="EXECUTION_IDX">
 			<column name="id" />
-			<column name="action_id" />
-			<column name="fiu_id" />
 		</createIndex>
-	        <addForeignKeyConstraint baseColumnNames="FIU_ID"
-             baseTableName="EXECUTION"
-             constraintName="fk_fiu_id"
-             referencedColumnNames="id"
-             referencedTableName="FIU"/>
-           <addForeignKeyConstraint baseColumnNames="ACTION_ID"
-          baseTableName="EXECUTION"
-          constraintName="fk_action_id"
-          referencedColumnNames="id"
-          referencedTableName="ACTION"/>
 	</changeSet>
-	<changeSet id="4" author="${author}" >
-            <preConditions onFail="MARK_RAN" >          
-            	<not><columnExists tableName="FIU" columnName="apikey"/></not>
-            </preConditions>
-            <addColumn tableName="FIU">
-        <column name="apikey" type="varchar(255)"/>
-    </addColumn> 
-</changeSet>
 </databaseChangeLog>

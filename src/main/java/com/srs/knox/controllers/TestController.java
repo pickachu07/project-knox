@@ -20,10 +20,8 @@ public class TestController {
 
 	@RequestMapping({ "/hi" })
 	public String firstPage() {
-		
 		UserCreationStatus status =  cUtil.createOwUser("testuser1");
-
         return status.getMessage();
     }
 	
-	}
+}
