@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,9 @@ import com.srs.knox.utils.KnoxException;
 
 @Service
 public class ExecutionService {
+	
+	@Value("${delay}")
+	private long DELAY;
 	
 	@Autowired
 	ExecutionRepo execRepo;
@@ -60,6 +64,7 @@ public class ExecutionService {
 				if(action.isActive()) {
 					Execution execution = new Execution(Status.DATA_PENDING, fiuid, actionid, fisessionid, LocalDateTime.now());
 					Execution executionRecord = execRepo.save(execution);
+					Thread.sleep(DELAY);
 					if(executionRecord != null) {
 						response = new InvokeExecutionResponse();
 						response.setVer("1.0");
@@ -94,6 +99,7 @@ public class ExecutionService {
 			if(executionRecord != null) {
 				executionRecord.setStatus(Status.DATA_READY);
 				execRepo.save(executionRecord);
+				Thread.sleep(DELAY);
 				DataReadyEvent event = new DataReadyEvent(executionRecord);
 				appEventPublisher.publishEvent(event);
 			} else {
