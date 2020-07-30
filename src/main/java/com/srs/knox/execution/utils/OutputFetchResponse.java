@@ -1,36 +1,49 @@
 package com.srs.knox.execution.utils;
 
-public class InvokeExecutionResponse {
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.UUID;
+
+public class OutputFetchResponse {
 	private String ver;
 	private String timestamp;
 	private String txnid;
 	private String sessionid;
-	private String executionid;
+	HashMap<String, Object> output;
 	
+	public OutputFetchResponse(String sessionid, HashMap<String, Object> output) {
+		super();
+		this.ver = "1.0";
+		this.timestamp = LocalDateTime.now().toString();
+		this.txnid = UUID.randomUUID().toString();
+		this.sessionid = sessionid;
+		this.output = output;
+	}
+
 	public String getVer() {
 		return ver;
 	}
-	
+
 	public void setVer(String ver) {
 		this.ver = ver;
 	}
-	
+
 	public String getTimestamp() {
 		return timestamp;
 	}
-	
+
 	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
-	
+
 	public String getTxnid() {
 		return txnid;
 	}
-	
+
 	public void setTxnid(String txnid) {
 		this.txnid = txnid;
 	}
-	
+
 	public String getSessionid() {
 		return sessionid;
 	}
@@ -39,11 +52,11 @@ public class InvokeExecutionResponse {
 		this.sessionid = sessionid;
 	}
 
-	public String getExecutionid() {
-		return executionid;
+	public HashMap<String, Object> getOutput() {
+		return output;
 	}
-	
-	public void setExecutionid(String executionid) {
-		this.executionid = executionid;
+
+	public void setOutput(HashMap<String, Object> output) {
+		this.output = output;
 	}
 }

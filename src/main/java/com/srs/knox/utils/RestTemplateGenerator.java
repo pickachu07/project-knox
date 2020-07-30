@@ -27,7 +27,6 @@ public class RestTemplateGenerator {
 			                .loadTrustMaterial(null, acceptingTrustStrategy)
 			                .build();
 		} catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	    SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext, new NoopHostnameVerifier());

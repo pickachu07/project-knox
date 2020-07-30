@@ -4,8 +4,8 @@ public class KeyMaterial {
 	private String cryptoAlg;
 	private String curve;
 	private String params;
-	DHPublicKey DHPublicKeyObject;
-	private float Nonce;
+	private DHPublicKey DHPublicKeyObject;
+	private String Nonce;
 	private String Signature;
 
 	public String getCryptoAlg() {
@@ -24,7 +24,7 @@ public class KeyMaterial {
 		return DHPublicKeyObject;
 	}
 
-	public float getNonce() {
+	public String getNonce() {
 		return Nonce;
 	}
 
@@ -48,7 +48,7 @@ public class KeyMaterial {
 		this.DHPublicKeyObject = DHPublicKeyObject;
 	}
 
-	public void setNonce(float Nonce) {
+	public void setNonce(String Nonce) {
 		this.Nonce = Nonce;
 	}
 

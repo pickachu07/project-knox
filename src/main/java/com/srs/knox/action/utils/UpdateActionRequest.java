@@ -1,15 +1,14 @@
 package com.srs.knox.action.utils;
 
-public class CreateActionRequest {
-	
+public class UpdateActionRequest {
 	private String fiuid;
-	private String actionname;
+	private String actionid;
 	private String main;
 	private String runtime;
 	private String timeout;
 	private String memory;
 	private String code;
-
+	
 	public String getFiuid() {
 		return fiuid;
 	}
@@ -18,19 +17,19 @@ public class CreateActionRequest {
 		this.fiuid = fiuid;
 	}
 	
-	public String getActionname() {
-		return actionname;
+	public String getActionid() {
+		return actionid;
 	}
 	
-	public void setActionname(String actionname) {
-		this.actionname = actionname;
+	public void setActionid(String actionid) {
+		this.actionid = actionid;
 	}
 	
 	public String getMain() {
 		return main;
 	}
 	
-	public void setMainclass(String main) {
+	public void setMain(String main) {
 		this.main = main;
 	}
 	

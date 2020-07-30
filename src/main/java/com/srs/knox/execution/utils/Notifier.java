@@ -3,6 +3,11 @@ package com.srs.knox.execution.utils;
 public class Notifier {
 	private String type;
 	private String id;
+	
+	public Notifier() {
+		this.type = "VDPR";
+		this.id = "VDPR-14";
+	}
 
 	public String getType() {
 		return type;

@@ -4,8 +4,9 @@ public class FINotificationRequest {
 	private String ver;
 	private String timestamp;
 	private String txnid;
+	private String sessionid;
 	private String executionid;
-	Notifier NotifierObject;
+	private Notifier NotifierObject;
 
 	public String getVer() {
 		return ver;
@@ -17,6 +18,14 @@ public class FINotificationRequest {
 
 	public String getTxnid() {
 		return txnid;
+	}
+
+	public String getSessionid() {
+		return sessionid;
+	}
+
+	public void setSessionid(String sessionid) {
+		this.sessionid = sessionid;
 	}
 
 	public String getExecutionid() {

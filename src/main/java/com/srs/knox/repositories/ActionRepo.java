@@ -12,4 +12,6 @@ public interface ActionRepo extends CrudRepository<Action, Integer>{
 	Action findById(long id);
 	Action findByName(String name);
 	List<Action> findByFiuid(long fiuid);
+	List<Action> findByFiuidAndActive(long fiuid, boolean active);
+	List<Action> findByFiuidAndDeleted(long fiuid, boolean deleted);
 }
