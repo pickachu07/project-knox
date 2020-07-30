@@ -38,7 +38,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ExecutionTime = props => {
-  const { className, ...rest } = props;
+  const { className,executionTime, ...rest } = props;
 
   const classes = useStyles();
 
@@ -61,7 +61,7 @@ const ExecutionTime = props => {
             >
               AVG. EXECUTION TIME
             </Typography>
-            <Typography variant="h3">100 ms</Typography>
+            <Typography variant="h3">{executionTime?executionTime:100} ms</Typography>
           </Grid>
           <Grid item>
             <Avatar className={classes.avatar}>

@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ActionCount = props => {
-  const { className, ...rest } = props;
+  const { className, actionCount, ...rest } = props;
 
   const classes = useStyles();
 
@@ -61,9 +61,9 @@ const ActionCount = props => {
               gutterBottom
               variant="body2"
             >
-              TOTAL FUNCTIONS
+              TOTAL ACTIONS
             </Typography>
-            <Typography variant="h3">1</Typography>
+              <Typography variant="h3">{actionCount?actionCount:5}</Typography>
           </Grid>
           <Grid item>
             <Avatar className={classes.avatar}>

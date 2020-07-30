@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const TotalInvocations = props => {
-  const { className, ...rest } = props;
+  const { className,invocationCount, ...rest } = props;
 
   const classes = useStyles();
 
@@ -61,9 +61,9 @@ const TotalInvocations = props => {
               gutterBottom
               variant="body2"
             >
-              Function Invocations
+              ACTION INVOCATIONS
             </Typography>
-            <Typography variant="h3">160</Typography>
+            <Typography variant="h3">{invocationCount?invocationCount:120}</Typography>
           </Grid>
           <Grid item>
             <Avatar className={classes.avatar}>

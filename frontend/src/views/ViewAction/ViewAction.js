@@ -15,6 +15,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import ReactJson from 'react-json-view'
+import { StatusBullet } from 'components';
 import {
   Card,
   CardHeader,
@@ -23,7 +25,7 @@ import {
   Divider,
   Grid,
   Button,
-
+  Paper,
   TextField
 } from '@material-ui/core';
 import ActionService from '../../services/actionService';
@@ -178,6 +180,10 @@ const ViewAction = props => {
     })
   } 
 
+  const parseDate = (date) => {
+    let dateStr = date.dayOfMonth+'-'+date.month+'-'+date.year+' '+date.hour+':'+date.minute+':'+date.second;
+    return dateStr;
+  }
 
 
 
@@ -187,10 +193,23 @@ const ViewAction = props => {
     console.log('Edit');
   }
 
-  const fetchExecutions = () => {
-    let executions = ExecutionService.fetchExecutions();
-    console.log(executions);
-    return executions;
+  const fetchExecutions = (id) => {
+    let executionPromise = ExecutionService.fetchExecutions(id);
+    executionPromise.then(response => {
+      if(response.status==200){
+        console.log('executions');
+        console.log(response.data);
+        setValues({
+          ...values,
+          executions:response.data
+        });
+      }else{
+        showError('data failure:')
+      }
+    }).catch(error =>{
+      showError(error);
+    })
+    
   }
 
   const handleChange = event => {
@@ -209,12 +228,11 @@ const ViewAction = props => {
 
   useEffect(() => {
     console.log('Edit:'+location.isEdit);
-    console.log(location.isEdit);
-    let executions = fetchExecutions();
-    setValues({
-      ...values,
-      executions:executions
-    });
+    console.log('id: '+values.id);
+    if(values.id>0){
+      fetchExecutions(values.id);
+    }
+    
   }, []);
 
 
@@ -441,62 +459,83 @@ const ViewAction = props => {
               />
               <Divider />
               <CardContent style={{'height':'320px'}}>
-                <Grid
-                  container
-                  spacing={2}
-                >
-                  <Grid item>
-                    
-                  </Grid>
-                  <Grid
-                    container
-                    item
-                    sm
-                    xs={12}
-                  >
+                
+                {
+                  selExec.isSelected ?
                     <Grid
                       container
-                      direction="column"
-                      item
                       spacing={2}
-                      xs
                     >
+                      <Grid 
+                        item>
+                      </Grid>
                       <Grid
+                        container
                         item
-                        xs
+                        sm
+                        xs={12}
                       >
-                        <Typography
-                          variant="body1"
-                        > <Icon className="fa fa-plus-circle" />
-                  {selExec.isSelected?+' Id: '+selExec.executionInstance.executionid:'no execution selected'}
-                        </Typography>
-                        <Typography
-                          gutterBottom
-                          variant="body2">
-                        {selExec.isSelected?'Id: '+selExec.executionInstance.executionid:'no execution selected'}
-                        </Typography>
-                        <Typography
-                          color="textSecondary"
-                          variant="body2"
+                        <Grid
+                          container
+                          direction="column"
+                          item
+                          spacing={2}
+                          xs
                         >
-                  ID: 1030114
-                        </Typography>
-                      </Grid>
-                      <Grid item>
-                        <Typography
-                          style={{ cursor: 'pointer' }}
-                          variant="body2"
-                        >
-                  Remove
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                    <Grid item>
-                      <Typography variant="overline" display="block">{selExec.isSelected?<Chip size="small" color="secondary" label={selExec.executionInstance.status}/>:''}</Typography>
-                    </Grid>
+                          <Grid
+                            item
+                            xs
+                          >
+                            <Typography
+                              variant="body1"
+                            >
+                              <StatusBullet
+                                color="info"
+                                size="sm"
+                              />
+                              {' ID: '+selExec.executionInstance.id}
+                            </Typography>
+                            
+
+                          </Grid>
+                          <Grid item>
+                            <Typography
+                              gutterBottom
+                              variant="body2">
+                              <StatusBullet
+                                color="danger"
+                                size="sm"
+                              />
+                              {' FI Session ID: \n'+selExec.executionInstance.fisessionid}
+                            </Typography>
+                          </Grid>
+                          <Grid item>
+                            <Typography
+                              gutterBottom
+                              variant="body2">
+                              <StatusBullet
+                                color="success"
+                                size="sm"
+                              />
+                              {' Last updated: '+parseDate(selExec.executionInstance.lastupdated)}
+                            </Typography>
+                          </Grid>
+                          <Grid item>
+
+                          </Grid>
+                          <Grid item>
+                            {selExec.executionInstance.output?<div><Typography color="secondary" variant="subtitle2" gutterBottom>Output</Typography><ReactJson src={selExec.executionInstance.output.result}/></div>:''}
+                          </Grid>
+                          
+                        </Grid>
+                        <Grid item>
+                          <Chip size="small" color="secondary" label={selExec.executionInstance.status}/>
+                        </Grid>
                     
-                  </Grid>
-                </Grid>
+                      </Grid>
+                    </Grid>
+                    :<Typography color="primary" style={{'text-align':'center'}}>No Execution Selected</Typography>
+                }
               </CardContent>
               <Divider />
               <CardActions className={classes.actions}>

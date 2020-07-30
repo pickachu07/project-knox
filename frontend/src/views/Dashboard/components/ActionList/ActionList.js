@@ -43,10 +43,15 @@ export default function ActionList(props) {
   
   const handleExecSelected = (exec)=>{
     console.log(exec);
-    // onSelected({
-    //   isSelected:true,
-    //   selectedExecution:exec
-    // })
+    onSelected({
+      isSelected:true,
+      selectedExecution:exec
+    })
+  }
+
+  const parseDate = (date) => {
+    let dateStr = date.dayOfMonth+'-'+date.month+'-'+date.year+' '+date.hour+':'+date.minute+':'+date.second;
+    return dateStr;
   }
 
 
@@ -63,17 +68,17 @@ export default function ActionList(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {executions ? executions.map((exec) => (  
-            <TableRow key={exec.executionid}>
+          {executions.length>0 ? executions.map((exec) => (  
+            <TableRow key={exec.id}>
               <TableCell  scope="row">
-                {exec.lastupdated}
+                {parseDate(exec.lastupdated)}
               </TableCell>
-              <TableCell align="center">{exec.metadata.duration}</TableCell>
-              <TableCell align="center">{exec.status}</TableCell>
-              <TableCell align="center">{exec.output.status}</TableCell>
+              <TableCell align="center">{exec.metadata ? exec.metadata.duration:''}</TableCell>
+              <TableCell align="center">{exec.status? exec.status : ''}</TableCell>
+              <TableCell align="center">{exec.output? exec.output.status:''}</TableCell>
               <TableCell align="center"><Button variant="outlined" onClick={() =>{onSelected(exec)}}>Details</Button></TableCell>
             </TableRow>
-          )): <TableRow><Typography  style={{'text-align':'center'}}>'No Executions found'</Typography></TableRow>}
+          )): <TableRow><Typography  >'No Executions found'</Typography></TableRow>}
         </TableBody>
       </Table>
     </TableContainer>
