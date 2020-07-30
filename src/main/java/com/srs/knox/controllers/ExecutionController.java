@@ -1,5 +1,6 @@
 package com.srs.knox.controllers;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -134,6 +135,25 @@ Logger logger = LoggerFactory.getLogger(ExecutionController.class);
 			}
 			if(executions != null) {
 				return new ResponseEntity<String>(objectMapper.writeValueAsString(executions), HttpStatus.OK);
+			} else {
+				return new ResponseEntity<String>("No executions found.", HttpStatus.NOT_FOUND);
+			}
+		} catch (Exception ex) {
+			logger.error("Get Action: Error " + ex.getLocalizedMessage());
+			return new ResponseEntity<String>(ex.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@GetMapping(path="/avgExecTime/fiu/{fiuid}")
+	@ResponseBody
+	public ResponseEntity<String> getAvgExecutionTimeByFiuid(@PathVariable String fiuid, @RequestHeader("vdpr_api_key") String key) {
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			long avgTime = executionService.getAvgExecutionTimeByFiuid(fiuid);
+			HashMap<String, Long> response = new HashMap<String, Long>();
+			response.put("avgTime", avgTime);
+			if(avgTime != 0) {
+				return new ResponseEntity<String>(objectMapper.writeValueAsString(response), HttpStatus.OK);
 			} else {
 				return new ResponseEntity<String>("No executions found.", HttpStatus.NOT_FOUND);
 			}

@@ -188,4 +188,22 @@ public class ExecutionService {
 	public List<Execution> getAllExecutionsByActionid(String actionId, boolean archived) {
 		return execRepo.findByActionidAndArchived(Long.parseLong(actionId), archived);
 	}
+
+	public long getAvgExecutionTimeByFiuid(String fiuid) {
+		List<Execution> executions = getAllExecutionsByFiuid(fiuid);
+		long avgTime = 0;
+		if(executions != null && !executions.isEmpty()) {
+			long totalTime = 0;
+			for(Execution execution : executions) {
+				try {
+					int duration = (int) execution.getMetadata().get("duration");
+					totalTime +=  duration;
+				} catch (Exception ex) {
+					totalTime += 0;
+				}
+			}
+			avgTime = totalTime/executions.size();
+		}
+		return avgTime;
+	}
 }
