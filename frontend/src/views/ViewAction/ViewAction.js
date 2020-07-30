@@ -8,9 +8,13 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/styles';
 import Typography from '@material-ui/core/Typography';
-import ButtonBase from '@material-ui/core/ButtonBase';
 import { useHistory} from 'react-router-dom';
 import Chip from '@material-ui/core/Chip';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import {
   Card,
   CardHeader,
@@ -27,7 +31,6 @@ import {LogViewer} from './components/LogViewer';
 import ExecutionService from '../../services/executionService';
 import {CodeEditor} from './components/CodeEditor'
 import { ActionList } from 'views/Dashboard/components';
-import lifecycle from 'react-pure-lifecycle';
 const useStyles = makeStyles(() => ({
   root: {
     margin : '20px',
@@ -48,12 +51,12 @@ function Alert(props) {
 
 // eslint-disable-next-line react/no-multi-comp
 const ViewAction = props => {
-  const { className, location, ...rest } = props;
+  const { className, location} = props;
 
   const classes = useStyles();
 
   const [values, setValues] = useState({
-    id:'',
+    id:location.isEdit?location.action.id:'',
     name: location.isEdit?location.action.name:'test',
     main: location.isEdit?location.action.main:'main',
     timeout: location.isEdit?location.action.timeout:'100',
@@ -87,28 +90,55 @@ const ViewAction = props => {
   });
 
   const handleSelectExecution = (exec) => {
-    console.log("exec selected");
     console.log(exec);
     setSelExec({
       isSelected:true,
       executionInstance:exec
     });
   }
-  const [open, setOpen] = React.useState(false);
 
-  const showSuccess = () => {
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
+
+
+
+  const [openDialog, setOpenDialog] = React.useState(false);
+
+  const [open, setOpen] = React.useState({
+    isOpen: false,
+    message:'Operation Successful!'
+  });
+  const [errorOpen, setErrorOpen] = React.useState({
+    isOpen: false,
+    message:'There was an error!'
+  });
+
+  const showSuccess = (msg) => {
     setValues({
       ...values,
       isError:false
     })
-    setOpen(true);
+    setOpen({
+      isOpen:true,
+      message:msg
+    });
   };
 
-  const showError = () => {
+  const showError = (msg) => {
     setValues({
+      ...values,
       isError:true
     })
-    setOpen(true);
+    setErrorOpen({
+      isOpen:true,
+      message:msg
+    });
   };
 
   const handleClose = (event, reason) => {
@@ -116,8 +146,40 @@ const ViewAction = props => {
       return;
     }
 
-    setOpen(false);
+    setOpen({
+      isOpen:false,
+      message:'',
+    });
+    setErrorOpen({
+      isOpen:false,
+      message:''
+    });
   };
+
+  const handleDeleteAction = () => {
+    console.log(values);
+    let deleteActionPromise = ActionService.deleteAction(values.id);
+    
+    deleteActionPromise.then(response =>{
+      if(response.status == 200){
+        console.log('Deleted succesfully');
+        showSuccess('Action Deleted!');
+        handleCloseDialog();
+        history.push('/actions');
+      }else{
+        console.log('Delete failed!'+response.status);
+        showError('There was an Error: '+response.message);
+        handleCloseDialog();
+      }
+    }).catch(error =>{
+      console.log('There was an Error: '+error);
+      showError('There was an '+error);
+      handleCloseDialog();
+    })
+  } 
+
+
+
 
   const handleEditAction = () => {
     history.push({pathname:'/create-action',isEdit:true,action:values });
@@ -150,9 +212,9 @@ const ViewAction = props => {
     console.log(location.isEdit);
     let executions = fetchExecutions();
     setValues({
-       ...values,
-       executions:executions
-     });
+      ...values,
+      executions:executions
+    });
   }, []);
 
 
@@ -200,6 +262,7 @@ const ViewAction = props => {
                       margin="dense"
                       name="name"
                       onChange={handleChange}
+                      disabled
                       required
                       value={values.name || ''}
                       variant="outlined"
@@ -215,8 +278,9 @@ const ViewAction = props => {
                       label="main class"
                       margin="dense"
                       name="main"
+                      disabled
                       onChange={handleChange}
-                      required
+                      
                       value={values.main || ''}
                       variant="outlined"
                     />
@@ -232,7 +296,8 @@ const ViewAction = props => {
                       margin="dense"
                       name="timeout"
                       onChange={handleChange}
-                      required
+                      
+                      disabled
                       type="number"
                       value={values.timeout || ''}
                       variant="outlined"
@@ -250,6 +315,7 @@ const ViewAction = props => {
                       name="memory"
                       onChange={handleChange}
                       type="number"
+                      disabled
                       value={values.memory || ''}
                       variant="outlined"
                     />
@@ -265,7 +331,7 @@ const ViewAction = props => {
                       margin="dense"
                       name="runtime"
                       onChange={handleChange}
-                      required
+                      disabled
                       select
                       // eslint-disable-next-line react/jsx-sort-props
                       SelectProps={{ native: true }}
@@ -290,6 +356,7 @@ const ViewAction = props => {
                     <CodeEditor 
                       code={values.code}
                       sendData={handleCodeChange}
+                      readOnly={true}
                     />
                   </Grid>
                 </Grid>
@@ -304,19 +371,40 @@ const ViewAction = props => {
                 >
                 Edit Action
                 </Button>
+                <Button
+                  
+                  onClick={handleOpenDialog}
+                  style={{'margin': '15px','color':'red'}}
+                  variant="contained"
+                >
+                Delete Action
+                </Button>
               </CardActions>
             </form>
           </Card>
+          
           <Snackbar
             autoHideDuration={6000}
             onClose={handleClose}
-            open={open}
+            open={open.isOpen}
           >
             <Alert
               onClose={handleClose}
-              severity={values.isError?'error':'success'}
+              severity="success"
             >
-              {values.isError? 'Error while saving Action.' : 'Action saved successfully!'}
+              {open.message}
+            </Alert>
+          </Snackbar>
+          <Snackbar
+            autoHideDuration={6000}
+            onClose={handleClose}
+            open={errorOpen.isOpen}
+          >
+            <Alert
+              onClose={handleClose}
+              severity="error"
+            >
+              {errorOpen.message}
             </Alert>
           </Snackbar>
         </Grid>
@@ -425,6 +513,28 @@ const ViewAction = props => {
           </Grid>
         </Grid>
       </Grid>
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{'Confirm Deletion'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are sure you want to delete the Action.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteAction} color="primary" style={{'color':'red'}} autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
     </div>
   );
 };

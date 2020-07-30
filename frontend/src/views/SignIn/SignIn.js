@@ -24,7 +24,7 @@ const schema = {
   username: {
     presence: { allowEmpty: false, message: 'is required' },
     length: {
-      minimum: 8,
+      minimum: 5,
       maximum: 64
     }
   },

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect  } from 'react';
 import clsx from 'clsx';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
@@ -16,6 +16,7 @@ import {
   TableRow,
 } from '@material-ui/core';
 import { useHistory} from 'react-router-dom';
+import ActionService from '../../../../services/actionService';
 
 import mockData from './data';
 
@@ -48,9 +49,42 @@ const Actions = props => {
 
   const classes = useStyles();
 
-  const [actions] = useState(mockData);
+  const [status,setStatus] = useState({
+    isError:false,
+    isSuccess:false,
+    isLoading:false
+  })
+
+  const [actions,setActions] = useState(mockData);
 
   const history = useHistory();
+
+
+  const fetchActions = () =>{
+    let actionPromise = ActionService.getAllActions();
+    actionPromise.then(actionResponse => {
+      console.log(actionResponse);
+      if(actionResponse.status !== 200){
+        console.log("Action response not OK : "+actionResponse.status);
+        setStatus({
+          ...status,
+          isError:true
+        })
+      }else{
+        console.log("Action response OK : "+actionResponse.data);
+        setActions(actionResponse.data);
+        setStatus({
+          ...status,
+          isSuccess:true
+        })
+      }
+    }).catch()
+  } 
+
+  useEffect(() => {
+    fetchActions();
+  }, []);
+
 
   return (
     <div className={classes.root}>
@@ -95,7 +129,7 @@ const Actions = props => {
                       key={order.id}
                     >
                       <TableCell>{order.id}</TableCell>
-                      <TableCell>{order.fiu_id}</TableCell>
+                      <TableCell>{order.fiuid}</TableCell>
                       <TableCell>{order.name}</TableCell>
                       <TableCell>
                         {order.main}

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.srs.knox.configs.JwtTokenUtil;
+import com.srs.knox.models.FIU;
 import com.srs.knox.models.FIUUserBaseModel;
 import com.srs.knox.models.JwtRequest;
 import com.srs.knox.models.JwtResponse;
@@ -41,16 +42,23 @@ public class JwtAuthenticationController {
 	private CommandUtil cUtil;
 	
 	@RequestMapping(value = "/authenticate", method = RequestMethod.POST)
-	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
-
+	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) {
+		try {
 		authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
 
+		String username = authenticationRequest.getUsername();
+		FIU fiu = fiuService.getFiuByUsername(username);
 		final UserDetails userDetails = fiuService
-				.loadUserByUsername(authenticationRequest.getUsername());
+				.loadUserByUsername(username);
 
 		final String token = jwtTokenUtil.generateToken(userDetails);
 
-		return ResponseEntity.ok(new JwtResponse(token));
+		return ResponseEntity.ok(new JwtResponse(token,username,fiu.getId(),fiu.getApiKey(),fiu.getName()));
+		}catch(Exception e) {
+			return ResponseEntity
+		            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+		            .body(e.toString());
+		}
 	}
 	
 	

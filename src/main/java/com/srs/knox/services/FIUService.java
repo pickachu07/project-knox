@@ -37,6 +37,13 @@ public class FIUService implements UserDetailsService{
 				new ArrayList<>());
 	}
 	
+	public Long getFiuIdByUsername(String username) {
+		FIU fiu = fiuRepo.findByUsername(username);
+		if(fiu == null) {
+			throw new UsernameNotFoundException("FIU not found with username: " + username);
+		}
+		return fiu.getId();
+	}
 	
 	public FIU save(FIUUserBaseModel fiu,String apiKey) {
 		FIU newFIU = new FIU();
@@ -46,6 +53,13 @@ public class FIUService implements UserDetailsService{
 		return fiuRepo.save(newFIU);
 	}
 
+	public FIU getFiuByUsername(String username) {
+		FIU fiu = fiuRepo.findByUsername(username);
+		if(fiu == null) {
+			throw new UsernameNotFoundException("FIU not found with username: " + username);
+		}
+		return fiu;
+	}
 	public boolean isNameUnique(String name) {
 		FIU fiu = fiuRepo.findByName(name);
 		if(fiu == null) {

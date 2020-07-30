@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable react/prop-types */
+import React, { useState} from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/styles';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import {
   Card,
   CardHeader,
@@ -17,9 +20,13 @@ import {
 import ActionService from '../../services/actionService';
 import {CodeEditor} from './components/CodeEditor'
 const useStyles = makeStyles(() => ({
+  backdrop: {
+    zIndex: 5 ,
+    color: '#fff',
+  },
   root: {
     margin : '20px',
-    height : '900px'
+    
   },
   executionList:{
     marginRight: '20px',
@@ -38,16 +45,17 @@ function Alert(props) {
 
 // eslint-disable-next-line react/no-multi-comp
 const CreateAction = props => {
-  const { className, location, ...rest } = props;
+  const { className, location} = props;
 
   const classes = useStyles();
 
   const [values, setValues] = useState({
+    id: location.isEdit?location.action.id:null,
     name: location.isEdit?location.action.name:'test',
     main: location.isEdit?location.action.main:'main',
     timeout: location.isEdit?location.action.timeout:'100',
     memory: location.isEdit?location.action.memory:'128',
-    runtime: location.isEdit?location.action.runtime:'js',
+    runtime: location.isEdit?location.action.runtime:'nodejs:default',
     code: location.isEdit?location.action.code:'function onLoad(editor) {}',
     isLoading:false,
     isSuccess:false,
@@ -63,21 +71,35 @@ const CreateAction = props => {
 
   };
 
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState({
+    isOpen: false,
+    message:'Operation Successful!'
+  });
+  const [errorOpen, setErrorOpen] = React.useState({
+    isOpen: false,
+    message:'There was an error!'
+  });
 
-  const showSuccess = () => {
+  const showSuccess = (msg) => {
     setValues({
       ...values,
       isError:false
     })
-    setOpen(true);
+    setOpen({
+      isOpen:true,
+      message:msg
+    });
   };
 
-  const showError = () => {
+  const showError = (msg) => {
     setValues({
+      ...values,
       isError:true
     })
-    setOpen(true);
+    setErrorOpen({
+      isOpen:true,
+      message:msg
+    });
   };
 
   const handleClose = (event, reason) => {
@@ -85,19 +107,65 @@ const CreateAction = props => {
       return;
     }
 
-    setOpen(false);
+    setOpen({
+      isOpen:false,
+      message:'',
+    });
+    setErrorOpen({
+      isOpen:false,
+      message:''
+    });
   };
+
+
+
 
   const handleActionUpdate = () => {
     console.log(values);
+    let editActionPromise = ActionService.updateAction(values.id,values.name,values.runtime,values.code,values.main,values.memory,values.timeout);
+    
+    editActionPromise.then(response =>{
+      if(response.status == 200){
+        console.log('Edited succesfully');
+        showSuccess('Action updated successfully!');
+      }else{
+        console.log('Edit failed!'+response.status);
+        showError('There was an Error: '+response.message);
+      }
+    }).catch(error =>{
+      console.log('There was an Error: '+error);
+      showError('There was an '+error);
+    })
   }
 
 
 
   const handleActionSave = () =>{
     console.log(values);
-    ActionService.saveAction(values.name,values.runtime,values.code,values.main,values.memory,values.timeout);
-    showError();
+    let saveActionPromise = ActionService.saveAction(values.name,values.runtime,values.code,values.main,values.memory,values.timeout);
+    setValues({
+      ...values,
+      isLoading:true
+    })
+    saveActionPromise.then((response) =>{
+      console.log(response);
+      if(response.status === 200){ 
+        showSuccess();
+        setValues({
+          ...values,
+          isLoading:false
+        })
+      }else{
+        showError('Error saving Action! Cause: '+response.message);
+      }
+    }).catch(error => {
+      console.log(error);
+      showError();
+      setValues({
+        ...values,
+        isLoading:false
+      })
+    })
   }
   const handleChange = event => {
     setValues({
@@ -108,24 +176,24 @@ const CreateAction = props => {
 
   const codeRuntime = [
     {
-      value: 'js',
+      value: 'nodejs:default',
       label: 'Javascript'
     }
   ];
 
-  useEffect(() => {
-    // Update the document title using the browser API
-    console.log('Edit:'+location.isEdit);
-    console.log(location.action);
-  });
-
-
 
   return (
     <div>
-      <Grid container spacing={3}>
-        <Grid item  md={12}
-          xs={12}>
+      
+      <Grid 
+        container
+        spacing={3}
+      >
+        <Grid 
+          item
+          md={12}
+          xs={12}
+        >
           <Card
             className={clsx(classes.root, className)}
           >
@@ -256,29 +324,52 @@ const CreateAction = props => {
                     color="secondary"
                     onClick={handleActionUpdate}
                     variant="contained"
+                    style={{'margin': '15px'}}
                   >
                 Update Action
-                  </Button>:
+                  </Button>
+                  :
                   <Button
                     color="primary"
                     onClick={handleActionSave}
                     variant="contained"
+                    style={{'margin': '15px'}}
                   >
                 Save Action
                   </Button>}
               </CardActions>
             </form>
           </Card>
+          {values.isLoading && <Backdrop 
+            className={classes.backdrop} 
+            // eslint-disable-next-line react/jsx-boolean-value
+            open={true}
+          >
+            <CircularProgress color="inherit" />
+          </Backdrop>}
+          
           <Snackbar
             autoHideDuration={6000}
             onClose={handleClose}
-            open={open}
+            open={open.isOpen}
           >
             <Alert
               onClose={handleClose}
-              severity={values.isError?'error':'success'}
+              severity="success"
             >
-              {values.isError? 'Error while saving Action.' : 'Action saved successfully!'}
+              {open.message}
+            </Alert>
+          </Snackbar>
+          <Snackbar
+            autoHideDuration={6000}
+            onClose={handleClose}
+            open={errorOpen.isOpen}
+          >
+            <Alert
+              onClose={handleClose}
+              severity="error"
+            >
+              {errorOpen.message}
             </Alert>
           </Snackbar>
         </Grid>

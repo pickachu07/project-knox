@@ -44,6 +44,7 @@ class CodeEditor extends React.Component {
           mode="javascript"
           theme="tomorrow"
           name="code"
+          readOnly={this.props.readOnly}
           onLoad={this.onLoad}
           onChange={this.handleCodeChange}
           fontSize={14}
