@@ -40,7 +40,6 @@ public class ActionController {
 	ActionService actionService;
 	
 	@PostMapping(value="/create")
-	@CrossOrigin(origins = "http://localhost:3000")
 	@ResponseBody
 	public ResponseEntity<String> createAction(@RequestBody CreateActionRequest requestBody, @RequestHeader("vdpr_api_key") String key) {
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -57,7 +56,6 @@ public class ActionController {
 	}
 	
 	@PutMapping(value="/update")
-	@CrossOrigin(origins = "http://localhost:3000")
 	@ResponseBody
 	public ResponseEntity<String> updateAction(@RequestBody UpdateActionRequest requestBody, @RequestHeader("vdpr_api_key") String key) {
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -74,7 +72,6 @@ public class ActionController {
 	}
 	
 	@PostMapping(value="/active/{actionid}")
-	@CrossOrigin(origins = "http://localhost:3000")
 	@ResponseBody
 	public ResponseEntity<String> activateAction(@PathVariable String actionid, @RequestParam boolean value, @RequestHeader("vdpr_api_key") String key) {
 		try {
@@ -90,7 +87,6 @@ public class ActionController {
 	}
 	
 	@DeleteMapping(value="/delete/{actionid}")
-	@CrossOrigin(origins = "http://localhost:3000")
 	@ResponseBody
 	public ResponseEntity<String> deleteAction(@PathVariable String actionid, @RequestHeader("vdpr_api_key") String key) {
 		try {
@@ -106,7 +102,6 @@ public class ActionController {
 	}
 	
 	@GetMapping(path="/get/{actionId}")
-	@CrossOrigin(origins = "http://localhost:3000")
 	@ResponseBody
 	public ResponseEntity<String> getAction(@PathVariable String actionId, @RequestHeader("vdpr_api_key") String key) {
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -124,7 +119,6 @@ public class ActionController {
 	}
 	
 	@GetMapping(path="/getAll/{fiuId}")
-	@CrossOrigin(origins = "http://localhost:3000")
 	@ResponseBody
 	public ResponseEntity<String> getAllActions(@PathVariable String fiuId, @RequestParam(required = false) String active, @RequestParam(required = false) String deleted, @RequestHeader("vdpr_api_key") String key) {
 		ObjectMapper objectMapper = new ObjectMapper();
