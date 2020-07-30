@@ -48,6 +48,9 @@ public class Execution {
 	@Convert(converter = HashMapConverter.class)
 	private Map<String, Object> output;
 	
+	@Convert(converter = HashMapConverter.class)
+	private Map<String, Object> metadata;
+
 	@Column(name = "ttl")
 	private long ttl;
 	
@@ -74,10 +77,6 @@ public class Execution {
 
 	public UUID getId() {
 		return id;
-	}
-
-	public void setId(UUID id) {
-		this.id = id;
 	}
 
 	public Status getStatus() {
@@ -136,11 +135,19 @@ public class Execution {
 		this.ttl = ttl;
 	}
 
-	public LocalDateTime getLastUpdated() {
+	public Map<String, Object> getMetadata() {
+		return metadata;
+	}
+
+	public void setMetadata(Map<String, Object> metadata) {
+		this.metadata = metadata;
+	}
+
+	public LocalDateTime getLastupdated() {
 		return lastupdated;
 	}
 
-	public void setLastUpdated(LocalDateTime lastupdated) {
+	public void setLastupdated(LocalDateTime lastupdated) {
 		this.lastupdated = lastupdated;
 	}
 

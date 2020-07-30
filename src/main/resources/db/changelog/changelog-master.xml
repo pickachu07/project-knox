@@ -24,7 +24,7 @@
             <column name="main" type="varchar(255)">
             	<constraints nullable="true"/>
             </column>
-            <column name="code" type="varchar(255)">
+            <column name="code" type="MEDIUMTEXT">
             	<constraints nullable="true"/>
             </column>
             <column name="runtime" type="varchar(255)">
@@ -37,6 +37,15 @@
 				<constraints nullable="true"/>
             </column>
             <column name="timeout" type="int(11)" >
+            	<constraints nullable="true"/>
+            </column>
+            <column name="version" type="varchar(255)" >
+            	<constraints nullable="true"/>
+            </column>
+            <column name="active" type="boolean" >
+            	<constraints nullable="true"/>
+            </column>
+            <column name="deleted" type="boolean" >
             	<constraints nullable="true"/>
             </column>
         </createTable>
@@ -92,7 +101,10 @@
             <column name="activationid" type="varchar(255)" >
             	<constraints nullable="true"/>
             </column>
-            <column name="output" type="varchar(255)" >
+            <column name="output" type="TEXT" >
+            	<constraints nullable="true"/>
+            </column>
+            <column name="metadata" type="TEXT" >
             	<constraints nullable="true"/>
             </column>
             <column name="ttl" type="int(11)" >

@@ -36,8 +36,17 @@ public class Action {
 	
 	@Column(name = "memory")
 	private int memory;
+	
+	@Column(name = "version")
+	private String version;
+	
+	@Column(name = "active")
+	private boolean active;
+	
+	@Column(name = "deleted")
+	private boolean deleted;
 
-	public Action(long fiuid, String name, String main, String code, String runtime, int timeout, int memory) {
+	public Action(long fiuid, String name, String main, String code, String runtime, int timeout, int memory, String version) {
 		super();
 		this.fiuid = fiuid;
 		this.name = name;
@@ -46,6 +55,9 @@ public class Action {
 		this.runtime = runtime;
 		this.timeout = timeout;
 		this.memory = memory;
+		this.active = true;
+		this.deleted = false;
+		this.version = version;
 	}
 	
 	public Action() {
@@ -111,5 +123,29 @@ public class Action {
 
 	public long getId() {
 		return id;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
 	}
 }

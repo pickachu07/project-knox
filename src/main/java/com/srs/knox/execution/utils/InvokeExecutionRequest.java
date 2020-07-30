@@ -7,7 +7,7 @@ public class InvokeExecutionRequest {
 	private String sessionId;
 	private String fiuid;
 	private String actionid;
-	KeyMaterial KeyMaterialObject;
+	private KeyMaterial KeyMaterialObject;
 
 	public String getVer() {
 		return ver;
