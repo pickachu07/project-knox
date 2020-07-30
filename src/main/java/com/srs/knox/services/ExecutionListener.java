@@ -40,6 +40,9 @@ import com.srs.knox.utils.RestTemplateGenerator;
 @Component
 public class ExecutionListener {
 	
+	@Value("${delay}")
+	private long DELAY;
+	
 	@Autowired
 	FIURepo fiuRepo;
 	@Autowired
@@ -85,6 +88,7 @@ public class ExecutionListener {
 			execRecord.setStatus(Status.EXECUTED);
 			execRecord.setLastupdated(LocalDateTime.now());
 			execRepo.save(execRecord);
+			Thread.sleep(DELAY);
 			HashMap<String, Object> output = (HashMap<String, Object>) activationResponse.get(new String("response"));
 			HashMap<String, Object> result = (HashMap<String, Object>) output.get(new String("result"));
 			boolean isValidOutput = false;
@@ -115,6 +119,7 @@ public class ExecutionListener {
 			execRecord.setTtl(86400);
 			execRecord.setLastupdated(LocalDateTime.now());
 			execRepo.save(execRecord);
+			Thread.sleep(DELAY);
 			notifyAA();
 		} catch (Exception e) {
 			e.printStackTrace();
