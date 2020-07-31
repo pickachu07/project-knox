@@ -1,8 +1,7 @@
 import axios from 'axios';
 
 import AuthService  from './AuthService';
-import executionData from './executionData';
-const API_URL = 'http://localhost:8080/execution';
+const API_URL = process.env.REACT_APP_IS_DEV==='true' ? 'http://localhost:8080/execution/' : '';
 
 class ExecutionService {
 
@@ -15,7 +14,7 @@ class ExecutionService {
         Authorization: `Bearer ${token}` 
       }
     }
-    return axios.get(API_URL+"/getAll/action/"+actionid,config)
+    return axios.get(API_URL+"getAll/action/"+actionid,config)
       .then(response =>{
         console.log(response);
         return response;
@@ -34,7 +33,7 @@ class ExecutionService {
         Authorization: `Bearer ${token}` 
       }
     }
-    return axios.get(API_URL+"/getAll/fiu/"+fiuid,config)
+    return axios.get(API_URL+"getAll/fiu/"+fiuid,config)
       .then(response =>{
         console.log(response);
         return response;
