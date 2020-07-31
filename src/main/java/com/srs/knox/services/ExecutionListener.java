@@ -204,8 +204,15 @@ public class ExecutionListener {
 	
 	private boolean isValidOutput(HashMap<String, Object> output) {
 		for (HashMap.Entry<String, Object> set : output.entrySet()) {
-		    if(set.getValue() instanceof Boolean) {
+			Object value = set.getValue();
+		    if(value instanceof Boolean) {
 		    	continue;
+		    } else if(value instanceof String) {
+		    	try {
+		    		Boolean.parseBoolean((String) value);
+		    	} catch (Exception ex) {
+		    		return false;
+		    	}
 		    } else {
 		    	return false;
 		    }
