@@ -38,7 +38,7 @@ import com.vdurmont.semver4j.Semver;
 
 @Service
 public class ActionService {
-	
+
 	@Autowired
 	FIURepo fiuRepo;
 	@Autowired

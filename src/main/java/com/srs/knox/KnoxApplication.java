@@ -11,5 +11,4 @@ public class KnoxApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(KnoxApplication.class, args);
 	}
-
 }
