@@ -1,12 +1,16 @@
 function main(params) {
-	var result = params.value > 25000 ? true : false;
-	return {
-		isGreaterThan: result
-	};
+    var accounts = params.accounts;
+    var transactions = accounts[0].transactions;
+    var totalBalance = 0;
+    var noOfTxn = transactions.length;
+    for (i = 0; i < noOfTxn; i++) {
+        totalBalance += parseFloat(transactions[i].CurrentBalance);
+    }
+    var avgBalance = totalBalance / noOfTxn;
+    var result = avgBalance > 50000;
+    return {
+        greaterThan50K: result
+    };
 }
 
-/*
-	{
-		"value": 30000
-	}
-*/
+//Sample data request in data.json file.
