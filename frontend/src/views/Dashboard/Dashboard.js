@@ -21,8 +21,8 @@ const Dashboard = () => {
   const classes = useStyles();
 
   const [stats, setStats] = React.useState({
-    actionCount:7,
-    invocationCount:121,
+    actionCount:0,
+    invocationCount:0,
     executionTime:101
   });
 
@@ -63,7 +63,7 @@ const Dashboard = () => {
     updateExecututionCount();
     updateActionCount();
 
-  }, []);
+  },[]);
 
 
   return (
