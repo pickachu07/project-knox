@@ -80,8 +80,12 @@ public class ExecutionListener {
 		
 		try {
 			HashMap<String, Object> fiFetchResponse = FIFetch();
-			ArrayList<Object> encryptedfi = (ArrayList<Object>) fiFetchResponse.get(new String("FI"));
-			ArrayList<Object> decryptedfi = decrypt(encryptedfi);
+			ArrayList<Object> FI = (ArrayList<Object>) fiFetchResponse.get(new String("FI"));
+			HashMap<String, Object> FIAtZeroIndex = (HashMap<String, Object>) FI.get(0);
+			ArrayList<Object> data = (ArrayList<Object>) FIAtZeroIndex.get(new String("data"));
+			HashMap<String, Object> dataAtZeroindex = (HashMap<String, Object>) data.get(0);
+			HashMap<String, Object> encryptedfi = (HashMap<String, Object>) dataAtZeroindex.get("encryptedFI");
+			HashMap<String, Object> decryptedfi = decrypt(encryptedfi);
 			String activationID = invokeAction(decryptedfi);
 			Thread.sleep(actionRecord.getTimeout() + 10);
 			HashMap<String, Object> activationResponse = fetchOutput(activationID);
@@ -92,20 +96,22 @@ public class ExecutionListener {
 			HashMap<String, Object> output = (HashMap<String, Object>) activationResponse.get(new String("response"));
 			HashMap<String, Object> result = (HashMap<String, Object>) output.get(new String("result"));
 			boolean isValidOutput = false;
-			if((Boolean) output.get(new String("success")) == true) {
+			if((Boolean) output.get(new String("status")).equals("success")) {
 				isValidOutput = isValidOutput(result);
-			}
-			if(isValidOutput) {
-				execRecord.setOutput(output);
+				if(isValidOutput) {
+					execRecord.setOutput(output);
+				} else {
+					HashMap<String, Object> invalidOutput = new HashMap<String, Object>();
+					invalidOutput.put("status","action rule violation");
+					invalidOutput.put("size", output.get("size"));
+					HashMap<String, String> errorResult = new HashMap<String, String>();
+					errorResult.put("errormsg", "Output JSON violates boolean only rule.");
+					invalidOutput.put("result", errorResult);
+					invalidOutput.put("success", false);
+					execRecord.setOutput(invalidOutput);
+				}
 			} else {
-				HashMap<String, Object> invalidOutput = new HashMap<String, Object>();
-				invalidOutput.put("status","action rule violation");
-				invalidOutput.put("size", output.get("size"));
-				HashMap<String, String> errorResult = new HashMap<String, String>();
-				errorResult.put("errormsg", "Output JSON violates boolean only rule.");
-				invalidOutput.put("result", errorResult);
-				invalidOutput.put("success", false);
-				execRecord.setOutput(invalidOutput);
+				execRecord.setOutput(output);
 			}
 			HashMap<String, Object> metadata = new HashMap<String, Object>();
 			metadata.put("start", activationResponse.get("start"));
@@ -144,25 +150,20 @@ public class ExecutionListener {
 		return successResponse;
 	}
 	
-	private ArrayList<Object> decrypt(ArrayList<Object> encryptedfi) {
+	private HashMap<String, Object> decrypt(HashMap<String, Object> encryptedfi) {
 		//TODO Implement decryption logic
 		return encryptedfi;
 	}
 	
-	private String invokeAction(ArrayList<Object> fi) throws Exception {
+	private String invokeAction(HashMap<String, Object> fi) throws Exception {
 		String activationID = null;
 		try {
 			final String uri = OW_BASE_URL + "/namespaces/" + fiuRecord.getUsername() + "/actions/" + actionRecord.getName();
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			headers.setBasicAuth(auth[0], auth[1]);
-			
-			HashMap<String, Object> fiDataAtFirstIndex = (HashMap<String, Object>) fi.get(0);
-			HashMap<String, Object> body = (HashMap<String, Object>) fiDataAtFirstIndex.get("data");
-			HttpEntity<String> entity = new HttpEntity<String>(new ObjectMapper().writeValueAsString(body), headers);
+			HttpEntity<String> entity = new HttpEntity<String>(new ObjectMapper().writeValueAsString(fi), headers);
 			System.out.println(entity.getBody());
-			
-			//HttpEntity<String> entity = new HttpEntity<String>(new ObjectMapper().writeValueAsString(fi), headers);
 			ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.POST, entity, String.class);
 			if(response.getStatusCode() == HttpStatus.ACCEPTED) {
 				activationID = (String) ((HashMap<String, Object>) hashMapConverter.convertToEntityAttribute(response.getBody())).get(new String("activationId"));
