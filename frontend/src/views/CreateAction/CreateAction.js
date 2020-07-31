@@ -183,6 +183,10 @@ const CreateAction = props => {
     {
       value: 'nodejs:default',
       label: 'Javascript'
+    },
+    {
+      value: 'python:default',
+      label: 'Python'
     }
   ];
 
@@ -327,7 +331,7 @@ const CreateAction = props => {
                       required
                       select
                       SelectProps={{ native: true }}
-                      value={values.state || ''}
+                      value={values.runtime || ''}
                       variant="outlined"
                     >
                       {codeRuntime.map(option => (
@@ -348,6 +352,7 @@ const CreateAction = props => {
                     <CodeEditor 
                       code={values.code}
                       sendData={handleCodeChange}
+                      mode={values.runtime === 'nodejs:default' ? 'javascript' :'python'}
                     />
                   </Grid>
                 </Grid>

@@ -46,6 +46,8 @@ import 'ace-builds/webpack-resolver';
 import 'ace-builds/src-noconflict/mode-java';
 import 'ace-builds/src-noconflict/theme-github';
 import aaService from '../../services/aaService';
+import TestTemplate from './TestTemplate'
+
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -77,7 +79,7 @@ const ViewAction = props => {
     main: location.isEdit?location.action.main:'main',
     timeout: location.isEdit?location.action.timeout:'100',
     memory: location.isEdit?location.action.memory:'128',
-    runtime: location.isEdit?location.action.runtime:'js',
+    runtime: location.isEdit?location.action.runtime:'nodejs:default',
     code: location.isEdit?location.action.code:`function main(params) {
       var result = params.value > 26000 ? true : false;
       return {
@@ -89,32 +91,7 @@ const ViewAction = props => {
     isError:false,
     isComponentEdit:location.isEdit?location.isEdit:false,
     executions:[],
-    testJson:`{
-      "ver": "1.0",
-      "FI": [
-        {
-          "data": {
-            "value": 30000
-          },
-          "fipID": "AA-14",
-          "KeyMaterial": {
-            "Nonce": "R4s6vNI7I/JfdeA3/6dMMQ==",
-            "curve": "Curve25519",
-            "DHPublicKey": {
-              "Parameters": "Some Params",
-              "KeyValue": "683938505ec529a700fcceab66273d1aa78d494208a4769930f0818872159265",
-              "expiry": "2020-12-06T11:39:57.153Z"
-            },
-            "Signature": "jFJcYCOTVV6iiLPlM7qY+Zz+3PF8oUPFg1byb1GNr+k=",
-            "cryptoAlg": "ECDHE",
-            "params": "Some Params"
-          }
-        }
-      ],
-      "sessionID": "",
-      "timestamp": "",
-      "txnid": ""
-    }`
+    testJson:JSON.stringify(TestTemplate, null, '\t')
   });
 
   const handleTestJSONUpdate = jsonData =>{
@@ -303,6 +280,10 @@ const ViewAction = props => {
     {
       value: 'nodejs:default',
       label: 'Javascript'
+    },
+    {
+      value: 'python:default',
+      label: 'Python'
     }
   ];
 

@@ -1,7 +1,6 @@
 import uuid from 'uuid/v1';
 
 export default [
-    export default [
         {
             "executionid": uuid(),
             "archived": "false",

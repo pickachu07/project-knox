@@ -42,7 +42,7 @@ class CodeEditor extends React.Component {
       <Paper elevation={1} style={{ padding:'5px'}}>
         <AceEditor
           placeholder="write your code here"
-          mode="javascript"
+          mode={this.props.mode || 'javascript'}
           theme="tomorrow"
           name="code"
           onLoad={this.onLoad}
