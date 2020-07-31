@@ -1,7 +1,9 @@
+/* eslint-disable react/jsx-max-props-per-line */
+/* eslint-disable react/jsx-boolean-value */
+/* eslint-disable react/jsx-sort-props */
 /* eslint-disable react/prop-types */
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import React, { useState, useEffect } from 'react';
-import Icon from '@material-ui/core/Icon';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -17,6 +19,10 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import ReactJson from 'react-json-view'
 import { StatusBullet } from 'components';
+import RefreshIcon from '@material-ui/icons/Refresh';
+
+
+
 import {
   Card,
   CardHeader,
@@ -25,7 +31,6 @@ import {
   Divider,
   Grid,
   Button,
-  Paper,
   TextField
 } from '@material-ui/core';
 import ActionService from '../../services/actionService';
@@ -33,6 +38,15 @@ import {LogViewer} from './components/LogViewer';
 import ExecutionService from '../../services/executionService';
 import {CodeEditor} from './components/CodeEditor'
 import { ActionList } from 'views/Dashboard/components';
+
+
+import AceEditor from 'react-ace';
+
+import 'ace-builds/webpack-resolver';
+import 'ace-builds/src-noconflict/mode-java';
+import 'ace-builds/src-noconflict/theme-github';
+import aaService from '../../services/aaService';
+
 const useStyles = makeStyles(() => ({
   root: {
     margin : '20px',
@@ -64,13 +78,84 @@ const ViewAction = props => {
     timeout: location.isEdit?location.action.timeout:'100',
     memory: location.isEdit?location.action.memory:'128',
     runtime: location.isEdit?location.action.runtime:'js',
-    code: location.isEdit?location.action.code:'function onLoad(editor) {}',
+    code: location.isEdit?location.action.code:`function main(params) {
+      var result = params.value > 26000 ? true : false;
+      return {
+        isGreaterThan: result
+      };
+    }`,
     isLoading:false,
     isSuccess:false,
     isError:false,
     isComponentEdit:location.isEdit?location.isEdit:false,
-    executions:[]
+    executions:[],
+    testJson:`{
+      "ver": "1.0",
+      "FI": [
+        {
+          "data": {
+            "value": 30000
+          },
+          "fipID": "AA-14",
+          "KeyMaterial": {
+            "Nonce": "R4s6vNI7I/JfdeA3/6dMMQ==",
+            "curve": "Curve25519",
+            "DHPublicKey": {
+              "Parameters": "Some Params",
+              "KeyValue": "683938505ec529a700fcceab66273d1aa78d494208a4769930f0818872159265",
+              "expiry": "2020-12-06T11:39:57.153Z"
+            },
+            "Signature": "jFJcYCOTVV6iiLPlM7qY+Zz+3PF8oUPFg1byb1GNr+k=",
+            "cryptoAlg": "ECDHE",
+            "params": "Some Params"
+          }
+        }
+      ],
+      "sessionID": "",
+      "timestamp": "",
+      "txnid": ""
+    }`
   });
+
+  const handleTestJSONUpdate = jsonData =>{
+    setValues({
+      ...values,
+      testJson:jsonData
+    });
+  }
+
+  const [openTester, setOpenTester] = React.useState(false);
+
+  const handleOpenActionTestDialog = () => {
+
+    setOpenTester(true);
+
+  }
+  const handleTestAction = () => {
+    //console.log(values.testJson+'==> testing');
+    let firstOutput = aaService.loadMockFIPData(JSON.parse(values.testJson));
+    firstOutput.then(response =>{
+      if(response.status==200){
+        console.log('YAY');
+        let secondOutput = aaService.doMockFIRequest(values.id)
+        console.log(secondOutput);
+        secondOutput.then(resp =>{
+          console.log(resp);
+          if(resp.status==200){
+            handleClose();
+            showSuccess('Test executed successfully. Check Executions for details.');
+            console.log('YAY YAY!');
+          }
+        }).catch(error =>{
+          console.log(error);
+        })
+      }
+    }).catch(error =>{
+      console.log(error);
+    })
+  }
+
+
 
   const handleCodeChange = code => {
     setValues({
@@ -80,11 +165,7 @@ const ViewAction = props => {
 
   };
 
-  const logs = [
-    'somestring',
-    'somestring',
-    'somestring',
-  ]
+ 
 
 
   const [selExec,setSelExec] = React.useState({
@@ -106,8 +187,6 @@ const ViewAction = props => {
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
-
-
 
 
   const [openDialog, setOpenDialog] = React.useState(false);
@@ -156,6 +235,7 @@ const ViewAction = props => {
       isOpen:false,
       message:''
     });
+    setOpenTester(false);
   };
 
   const handleDeleteAction = () => {
@@ -221,7 +301,7 @@ const ViewAction = props => {
 
   const codeRuntime = [
     {
-      value: 'js',
+      value: 'nodejs:default',
       label: 'Javascript'
     }
   ];
@@ -233,8 +313,15 @@ const ViewAction = props => {
       fetchExecutions(values.id);
     }
     
-  }, []);
+  },[]);
 
+  const handleExecutionRefresh = () =>{
+    console.log('refresh');
+    if(values.id>0){
+      fetchExecutions(values.id);
+      console.log('exec fetched '+values.id);
+    }
+  }
 
   const history = useHistory();
 
@@ -276,7 +363,7 @@ const ViewAction = props => {
                     <TextField
                       fullWidth
                       helperText="Please specify the action name"
-                      label="Action name"
+                      label="Action Name"
                       margin="dense"
                       name="name"
                       onChange={handleChange}
@@ -293,7 +380,7 @@ const ViewAction = props => {
                   >
                     <TextField
                       fullWidth
-                      label="main class"
+                      label="Main"
                       margin="dense"
                       name="main"
                       disabled
@@ -310,7 +397,7 @@ const ViewAction = props => {
                   >
                     <TextField
                       fullWidth
-                      label="Timeout"
+                      label="Timeout(in milliseconds)"
                       margin="dense"
                       name="timeout"
                       onChange={handleChange}
@@ -345,7 +432,7 @@ const ViewAction = props => {
                   >
                     <TextField
                       fullWidth
-                      label="Runtume"
+                      label="Runtime"
                       margin="dense"
                       name="runtime"
                       onChange={handleChange}
@@ -397,6 +484,14 @@ const ViewAction = props => {
                 >
                 Delete Action
                 </Button>
+                <Button
+                  color="primary"
+                  onClick={handleOpenActionTestDialog}
+                  style={{'margin': '15px'}}
+                  variant="contained"
+                >
+                Test Action
+                </Button>
               </CardActions>
             </form>
           </Card>
@@ -444,6 +539,17 @@ const ViewAction = props => {
               />
               <Divider />
               <ActionList executions={values.executions} onSelected={handleSelectExecution}/>
+              <CardActions className={classes.actions}>
+                <Button
+                  color="primary"
+                  size="small"
+                  variant="text"
+                  style={{'float':'right'}}
+                  onClick={handleExecutionRefresh}
+                >
+                  Refresh <RefreshIcon />
+                </Button>
+              </CardActions>
             </Card>
           </Grid>
           <Grid 
@@ -458,7 +564,7 @@ const ViewAction = props => {
                 title="Execution details"
               />
               <Divider />
-              <CardContent style={{'height':'320px'}}>
+              <CardContent style={{'height':'270px'}}>
                 
                 {
                   selExec.isSelected ?
@@ -466,9 +572,6 @@ const ViewAction = props => {
                       container
                       spacing={2}
                     >
-                      <Grid 
-                        item>
-                      </Grid>
                       <Grid
                         container
                         item
@@ -521,9 +624,6 @@ const ViewAction = props => {
                             </Typography>
                           </Grid>
                           <Grid item>
-
-                          </Grid>
-                          <Grid item>
                             {selExec.executionInstance.output?<div><Typography color="secondary" variant="subtitle2" gutterBottom>Output</Typography><ReactJson src={selExec.executionInstance.output.result}/></div>:''}
                           </Grid>
                           
@@ -565,15 +665,64 @@ const ViewAction = props => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary">
+          <Button 
+            onClick={handleCloseDialog} 
+            color="primary">
             Cancel
           </Button>
-          <Button onClick={handleDeleteAction} color="primary" style={{'color':'red'}} autoFocus>
+          <Button 
+            onClick={handleDeleteAction} 
+            color="primary" 
+            style={{'color':'red'}} 
+            autoFocus
+          >
             Delete
           </Button>
         </DialogActions>
       </Dialog>
-
+      <Dialog
+        aria-describedby="action-tester-dialog"
+        aria-labelledby="action-tester-dialog-title"
+        onClose={handleClose}
+        open={openTester}
+      >
+        <DialogTitle id="action-tester-dialog-title">Test Action</DialogTitle>
+        <DialogContent>
+          <AceEditor
+            placeholder="write your code here"
+            mode="json"
+            theme="tomorrow"
+            name="testJson"
+            onChange={handleTestJSONUpdate}
+            fontSize={14}
+            showPrintMargin={true}
+            showGutter={true}
+            highlightActiveLine={true}
+            value={values.testJson}
+            setOptions={{
+              enableBasicAutocompletion: true,
+              enableLiveAutocompletion: true,
+              enableSnippets: true,
+              showLineNumbers: true,
+              tabSize: 2,
+            }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="primary"
+            onClick={handleClose}
+          >
+              Cancel
+          </Button>
+          <Button
+            color="primary"
+            onClick={handleTestAction}
+          >
+              Test
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

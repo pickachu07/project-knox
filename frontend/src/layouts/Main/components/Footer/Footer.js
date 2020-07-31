@@ -23,7 +23,7 @@ const Footer = props => {
       <Typography variant="body1">
         &copy;{' '}
         
-        2020. Indecent Gradients.
+        2020. The Indecent Gradients.
       </Typography>
       <Typography variant="caption">
         Built for AA Hackathon.

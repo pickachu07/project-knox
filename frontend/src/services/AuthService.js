@@ -1,9 +1,11 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/';
+const API_URL = process.env.REACT_APP_IS_DEV==='true' ? 'http://localhost:8080/' :'';
 
 class AuthService {
+
   login(username, password) {
+    
     return axios
       .post(API_URL + 'authenticate', {
         username,

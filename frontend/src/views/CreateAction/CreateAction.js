@@ -56,7 +56,12 @@ const CreateAction = props => {
     timeout: location.isEdit?location.action.timeout:'100',
     memory: location.isEdit?location.action.memory:'128',
     runtime: location.isEdit?location.action.runtime:'nodejs:default',
-    code: location.isEdit?location.action.code:'function onLoad(editor) {}',
+    code: location.isEdit?location.action.code:`function main(params) {
+      var result = params.value > 26000 ? true : false;
+      return {
+        isGreaterThan: result
+      };
+    }`,
     isLoading:false,
     isSuccess:false,
     isError:false,
@@ -181,6 +186,25 @@ const CreateAction = props => {
     }
   ];
 
+  const memoryList = [
+    {
+      value: '128',
+      label: '128'
+    },
+    {
+      value: '256',
+      label: '256'
+    },
+    {
+      value: '512',
+      label: '512'
+    },
+    {
+      value: '1024',
+      label: '1024'
+    },
+  ]
+
 
   return (
     <div>
@@ -251,7 +275,7 @@ const CreateAction = props => {
                   >
                     <TextField
                       fullWidth
-                      label="Timeout"
+                      label="Timeout(in milliseconds)"
                       margin="dense"
                       name="timeout"
                       onChange={handleChange}
@@ -273,9 +297,21 @@ const CreateAction = props => {
                       name="memory"
                       onChange={handleChange}
                       type="number"
+                      required
+                      select
+                      SelectProps={{ native: true }}
                       value={values.memory|| ''}
                       variant="outlined"
-                    />
+                    >
+                      {memoryList.map(option => (
+                        <option
+                          key={option.value}
+                          value={option.value}
+                        >
+                          {option.label}
+                        </option>
+                      ))}
+                    </TextField>
                   </Grid>
                   <Grid
                     item
@@ -284,13 +320,12 @@ const CreateAction = props => {
                   >
                     <TextField
                       fullWidth
-                      label="Runtume"
+                      label="Runtime"
                       margin="dense"
                       name="runtime"
                       onChange={handleChange}
                       required
                       select
-                      // eslint-disable-next-line react/jsx-sort-props
                       SelectProps={{ native: true }}
                       value={values.state || ''}
                       variant="outlined"

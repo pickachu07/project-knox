@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 import AuthService  from './AuthService';
-const API_URL = 'http://localhost:8080/action';
+
+const API_URL = process.env.REACT_APP_IS_DEV==='true' ? 'http://localhost:8080/action/' : '';
 
 class ActionService {
   
@@ -16,7 +17,7 @@ class ActionService {
     }
              
     return axios
-      .post(API_URL + '/create', {
+      .post(API_URL + 'create', {
         'fiuid':fiuid,
         'actionname':name,
         'runtime':runtime,
@@ -42,7 +43,7 @@ class ActionService {
         Authorization: `Bearer ${token}` 
       }
     }
-    return axios.put(API_URL + '/update',{
+    return axios.put(API_URL + 'update',{
       'actionid':actionid,
       'fiuid':fiuid,
       'actionname':name,
@@ -70,7 +71,7 @@ class ActionService {
         Authorization: `Bearer ${token}` 
       }
     }
-    return axios.delete(API_URL+ '/delete/' + actionid,config)
+    return axios.delete(API_URL+ 'delete/' + actionid,config)
       .then(response =>{
         console.log(response);
         return response;
@@ -88,7 +89,7 @@ class ActionService {
         Authorization: `Bearer ${token}` 
       }
     }
-    return axios.get(API_URL+'/getAll/'+fiuid+'?deleted=false',config)
+    return axios.get(API_URL+'getAll/'+fiuid+'?deleted=false',config)
       .then(response =>{
         console.log(response);
         return response
@@ -106,7 +107,7 @@ class ActionService {
         Authorization: `Bearer ${token}` 
       }
     }
-    return axios.get(API_URL+'/get'+id,config)
+    return axios.get(API_URL+'get'+id,config)
       .then(response =>{
         console.log(response);
         return response

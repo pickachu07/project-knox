@@ -27,11 +27,12 @@ const Profile = props => {
   const classes = useStyles();
 
   const user = {
-    name: 'ABC Corp.',
+    name: 'ABC BANK',
     avatar: '/images/avatars/avatar_11.png',
-    bio: 'Trusted FIU'
+    bio: 'Verified FIU'
   };
 
+ 
   return (
     <div
       {...rest}
