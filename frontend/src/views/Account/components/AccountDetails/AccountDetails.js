@@ -24,11 +24,10 @@ const AccountDetails = props => {
 
   const [values, setValues] = useState({
     firstName: 'Shen',
-    lastName: 'Zhi',
-    email: 'shen.zhi@devias.io',
+    email: 'admin@abcbank.com',
     phone: '',
-    state: 'Alabama',
-    country: 'USA'
+    state: 'MAHARASHTRA',
+    country: 'INDIA'
   });
 
   const handleChange = event => {
@@ -40,16 +39,16 @@ const AccountDetails = props => {
 
   const states = [
     {
-      value: 'alabama',
-      label: 'Alabama'
+      value: 'MAHARASHTRA',
+      label: 'MAHARASHTRA'
     },
     {
-      value: 'new-york',
-      label: 'New York'
+      value: 'DELHI',
+      label: 'DELHI'
     },
     {
-      value: 'san-francisco',
-      label: 'San Francisco'
+      value: 'KARNATAKA',
+      label: 'KARNATAKA'
     }
   ];
 
@@ -74,13 +73,13 @@ const AccountDetails = props => {
           >
             <Grid
               item
-              md={6}
+              md={12}
               xs={12}
             >
               <TextField
                 fullWidth
-                helperText="Please specify the first name"
-                label="First name"
+                helperText="Please specify the Name"
+                label="Name"
                 margin="dense"
                 name="firstName"
                 onChange={handleChange}
@@ -89,22 +88,7 @@ const AccountDetails = props => {
                 variant="outlined"
               />
             </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Last name"
-                margin="dense"
-                name="lastName"
-                onChange={handleChange}
-                required
-                value={values.lastName}
-                variant="outlined"
-              />
-            </Grid>
+            
             <Grid
               item
               md={6}

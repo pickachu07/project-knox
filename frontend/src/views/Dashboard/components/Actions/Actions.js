@@ -45,7 +45,7 @@ const useStyles = makeStyles(theme => ({
 
 
 const Actions = props => {
-  const { className, ...rest } = props;
+  const { className,} = props;
 
   const classes = useStyles();
 
@@ -65,13 +65,13 @@ const Actions = props => {
     actionPromise.then(actionResponse => {
       console.log(actionResponse);
       if(actionResponse.status !== 200){
-        console.log("Action response not OK : "+actionResponse.status);
+        console.log('Action response not OK : '+actionResponse.status);
         setStatus({
           ...status,
           isError:true
         })
       }else{
-        console.log("Action response OK : "+actionResponse.data);
+        console.log('Action response OK : '+actionResponse.data);
         setActions(actionResponse.data);
         setStatus({
           ...status,
@@ -95,9 +95,9 @@ const Actions = props => {
           action={
             <Button
               color="primary"
+              onClick={() => {history.push({pathname:'/create-action',isEdit:false})}}
               size="small"
               variant="outlined"
-              onClick={() => {history.push({pathname:'/create-action',isEdit:false})}}
             >
               New Action
             </Button>
@@ -111,14 +111,13 @@ const Actions = props => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Action Id</TableCell>
-                    <TableCell>FIU ID</TableCell>
+                    <TableCell>Action ID</TableCell>
                     <TableCell >
-                        name                   
+                        Name                   
                     </TableCell>
-                    <TableCell>main</TableCell>
-                    <TableCell>memory</TableCell>
-                    <TableCell>timeout</TableCell>
+                    <TableCell>Main</TableCell>
+                    <TableCell>Memory</TableCell>
+                    <TableCell>Timeout</TableCell>
                     <TableCell> </TableCell>
                   </TableRow>
                 </TableHead>
@@ -129,7 +128,6 @@ const Actions = props => {
                       key={order.id}
                     >
                       <TableCell>{order.id}</TableCell>
-                      <TableCell>{order.fiuid}</TableCell>
                       <TableCell>{order.name}</TableCell>
                       <TableCell>
                         {order.main}
@@ -144,9 +142,9 @@ const Actions = props => {
                         <div className={classes.statusContainer}>
                           <Button 
                             color="secondary" 
+                            onClick={() => {history.push({pathname:'/view-action',isEdit:true,action:order })}}
                             size="small"
                             variant="outlined"
-                            onClick={() => {history.push({pathname:'/view-action',isEdit:true,action:order })}}
                           >View
                           </Button>
                           {order.status}

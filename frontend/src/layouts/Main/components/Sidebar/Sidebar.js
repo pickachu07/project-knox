@@ -4,9 +4,10 @@ import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { Divider, Drawer } from '@material-ui/core';
 import DashboardIcon from '@material-ui/icons/Dashboard';
-import PeopleIcon from '@material-ui/icons/People';
-
+import CreateIcon from '@material-ui/icons/Create';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
+
+import OfflineBoltIcon from '@material-ui/icons/OfflineBolt';
 
 
 import { Profile, SidebarNav } from './components';
@@ -46,9 +47,14 @@ const Sidebar = props => {
       icon: <DashboardIcon />
     },
     {
-      title: 'Functions',
+      title: 'Create Action',
+      href: '/create-action',
+      icon: <CreateIcon />
+    },
+    {
+      title: 'Actions',
       href: '/actions',
-      icon: <PeopleIcon />
+      icon: <OfflineBoltIcon />
     },
     // {
     //   title: 'Products',
@@ -73,11 +79,6 @@ const Sidebar = props => {
     {
       title: 'Account',
       href: '/account',
-      icon: <AccountBoxIcon />
-    },
-    {
-      title: 'Create Action',
-      href: '/create-action',
       icon: <AccountBoxIcon />
     }
   ];
