@@ -7,6 +7,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/styles';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { useHistory} from 'react-router-dom';
 import {
   Card,
   CardHeader,
@@ -53,8 +54,8 @@ const CreateAction = props => {
     id: location.isEdit?location.action.id:null,
     name: location.isEdit?location.action.name:'test',
     main: location.isEdit?location.action.main:'main',
-    timeout: location.isEdit?location.action.timeout:'100',
-    memory: location.isEdit?location.action.memory:'128',
+    timeout: location.isEdit?location.action.timeout:'10000',
+    memory: location.isEdit?location.action.memory:'256',
     runtime: location.isEdit?location.action.runtime:'nodejs:default',
     code: location.isEdit?location.action.code:`function main(params) {
       var result = params.value > 26000 ? true : false;
@@ -155,11 +156,12 @@ const CreateAction = props => {
     saveActionPromise.then((response) =>{
       console.log(response);
       if(response.status === 200){ 
-        showSuccess();
+        showSuccess("Action saved successfully!");
         setValues({
           ...values,
           isLoading:false
         })
+        history.push('/actions')
       }else{
         showError('Error saving Action! Cause: '+response.message);
       }
@@ -209,7 +211,7 @@ const CreateAction = props => {
     },
   ]
 
-
+  const history = useHistory();
   return (
     <div>
       
@@ -230,7 +232,7 @@ const CreateAction = props => {
               noValidate
             >
               <CardHeader
-                subheader="Create or Edit your actions"
+                subheader="Create or edit your action"
                 title="Action"
               />
               <Divider />
@@ -247,7 +249,7 @@ const CreateAction = props => {
                     <TextField
                       fullWidth
                       helperText="Please specify the action name"
-                      label="Action name"
+                      label="Action Name"
                       margin="dense"
                       name="name"
                       onChange={handleChange}
@@ -263,7 +265,7 @@ const CreateAction = props => {
                   >
                     <TextField
                       fullWidth
-                      label="main class"
+                      label="Main"
                       margin="dense"
                       name="main"
                       onChange={handleChange}

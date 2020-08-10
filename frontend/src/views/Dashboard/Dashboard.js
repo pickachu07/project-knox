@@ -1,8 +1,7 @@
 import React, {useEffect} from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
-import ActionService from '../../services/actionService';
-import ExecutionService from '../../services/executionService';
+
 import {
   ActionCount,
   TotalInvocations,
@@ -26,44 +25,6 @@ const Dashboard = () => {
     executionTime:101
   });
 
-  const updateExecututionCount = () =>{
-    let executionPromise = ExecutionService.fetchAllExecutions();
-    executionPromise.then(response => {
-      if(response.status==200){
-        console.log('executions');
-        console.log(response.data);
-
-        setStats({
-          ...stats,
-          invocationCount:response.data.length?response.data.length:150
-        });
-      }else{
-        console.log('data failure:')
-      }
-    }).catch(error =>{
-      console.log('error while fetching executions'+error);
-    })
-  }
-
-  const updateActionCount = () =>{
-    let actionPromise = ActionService.getAllActions();
-    actionPromise.then(actionResponse => {
-      if(actionResponse.status == 200){
-        setStats({
-          ...stats,
-          actionCount:actionResponse.data?actionResponse.data.length:7
-        })
-      }
-    }).catch()
-  } 
-
-
-
-  useEffect(() => {
-    updateExecututionCount();
-    updateActionCount();
-
-  },[]);
 
 
   return (
@@ -79,7 +40,7 @@ const Dashboard = () => {
           xl={4}
           xs={12}
         >
-          <ActionCount actionCount={stats.actionCount}/>
+          <ActionCount />
         </Grid>
         <Grid
           item
@@ -88,7 +49,7 @@ const Dashboard = () => {
           xl={4}
           xs={12}
         >
-          <TotalInvocations invocationCount={stats.invocationCount}/>
+          <TotalInvocations/>
         </Grid>
         <Grid
           item

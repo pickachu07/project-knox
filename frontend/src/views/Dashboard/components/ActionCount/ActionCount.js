@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { Card, CardContent, Grid, Typography, Avatar } from '@material-ui/core';
 import DirectionsRunOutlinedIcon from '@material-ui/icons/DirectionsRunOutlined';
-
+import ActionService from '../../../../services/actionService';
 const useStyles = makeStyles(theme => ({
   root: {
     height: '100%'
@@ -44,9 +44,28 @@ const ActionCount = props => {
 
   const classes = useStyles();
 
+  const [stats, setStats] = React.useState({
+    actionCount:0,
+  });
+
+  const updateActionCount = () =>{
+    let actionPromise = ActionService.getAllActions();
+    actionPromise.then(actionResponse => {
+      if(actionResponse.status == 200){
+        setStats({
+          actionCount:actionResponse.data?actionResponse.data.length:0
+        })
+      }
+    }).catch()
+  } 
+
+  useEffect(() => {
+    updateActionCount();
+
+  },[]);
+
   return (
     <Card
-      {...rest}
       className={clsx(classes.root, className)}
     >
       <CardContent>
@@ -63,7 +82,7 @@ const ActionCount = props => {
             >
               TOTAL ACTIONS
             </Typography>
-              <Typography variant="h3">{actionCount?actionCount:5}</Typography>
+              <Typography variant="h3">{stats.actionCount}</Typography>
           </Grid>
           <Grid item>
             <Avatar className={classes.avatar}>

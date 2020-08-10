@@ -38,6 +38,8 @@ const LogRow = ({ match, children }) => {
 };
 
 class LogViewer extends React.Component {
+
+
   static getDerivedStateFromProps(props, state) {
     return {
       ...state,

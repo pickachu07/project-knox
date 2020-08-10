@@ -63,7 +63,7 @@ const Actions = props => {
   const fetchActions = () =>{
     let actionPromise = ActionService.getAllActions();
     actionPromise.then(actionResponse => {
-      console.log(actionResponse);
+      //console.log(actionResponse);
       if(actionResponse.status !== 200){
         console.log('Action response not OK : '+actionResponse.status);
         setStatus({

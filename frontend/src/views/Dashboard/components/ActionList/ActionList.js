@@ -78,7 +78,7 @@ export default function ActionList(props) {
               <TableCell align="center">{exec.output? exec.output.status:''}</TableCell>
               <TableCell align="center"><Button variant="outlined" onClick={() =>{onSelected(exec)}}>Details</Button></TableCell>
             </TableRow>
-          )): <TableRow><Typography  >'No Executions found'</Typography></TableRow>}
+          )): <TableRow><TableCell><Typography>No Executions found</Typography></TableCell></TableRow>}
         </TableBody>
       </Table>
     </TableContainer>

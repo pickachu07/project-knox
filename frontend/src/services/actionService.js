@@ -73,7 +73,7 @@ class ActionService {
     }
     return axios.delete(API_URL+ 'delete/' + actionid,config)
       .then(response =>{
-        console.log(response);
+       // console.log(response);
         return response;
       })
   }
@@ -91,7 +91,7 @@ class ActionService {
     }
     return axios.get(API_URL+'getAll/'+fiuid+'?deleted=false',config)
       .then(response =>{
-        console.log(response);
+        //console.log(response);
         return response
       })
   }
@@ -109,7 +109,7 @@ class ActionService {
     }
     return axios.get(API_URL+'get'+id,config)
       .then(response =>{
-        console.log(response);
+       // console.log(response);
         return response
       })
   }

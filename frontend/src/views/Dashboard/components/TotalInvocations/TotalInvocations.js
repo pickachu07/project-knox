@@ -1,9 +1,11 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { Card, CardContent, Grid, Typography, Avatar } from '@material-ui/core';
 import OfflineBoltOutlinedIcon from '@material-ui/icons/OfflineBoltOutlined';
+
+import ExecutionService from '../../../../services/executionService';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -40,9 +42,39 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const TotalInvocations = props => {
-  const { className,invocationCount, ...rest } = props;
+  const { className, ...rest } = props;
 
   const classes = useStyles();
+
+  const [stats, setStats] = React.useState({
+    invocationCount:0,
+  });
+
+
+  const updateExecututionCount = () =>{
+    let executionPromise = ExecutionService.fetchAllExecutions();
+    executionPromise.then(response => {
+      if(response.status==200){
+        console.log('executions');
+        //console.log(response.data);
+
+        setStats({
+          ...stats,
+          invocationCount:response.data.length?response.data.length:150
+        });
+      }else{
+        console.log('data failure:')
+      }
+    }).catch(error =>{
+      console.log('error while fetching executions'+error);
+    })
+  }
+
+  useEffect(() => {
+    updateExecututionCount();
+
+  },[]);
+
 
   return (
     <Card
@@ -63,7 +95,7 @@ const TotalInvocations = props => {
             >
               ACTION INVOCATIONS
             </Typography>
-            <Typography variant="h3">{invocationCount?invocationCount:120}</Typography>
+            <Typography variant="h3">{stats.invocationCount}</Typography>
           </Grid>
           <Grid item>
             <Avatar className={classes.avatar}>

@@ -23,6 +23,7 @@ class CodeEditor extends React.Component {
           isGreaterThan: result
         };
       }`,
+      mode:this.props.mode ? this.props.mode : 'javascript'
     };
 
     this.handleCodeChange = this.handleCodeChange.bind(this);
@@ -41,8 +42,9 @@ class CodeEditor extends React.Component {
         style={{ padding:'5px'}}>
         <AceEditor
           fontSize={14}
+          width="100%"
           highlightActiveLine={true}
-          mode="javascript"
+          mode={this.props.mode ? this.props.mode :"javascript"}
           name="code"
           onChange={this.handleCodeChange}
           onLoad={this.onLoad}

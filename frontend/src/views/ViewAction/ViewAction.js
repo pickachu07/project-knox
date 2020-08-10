@@ -69,7 +69,7 @@ function Alert(props) {
 
 // eslint-disable-next-line react/no-multi-comp
 const ViewAction = props => {
-  const { className, location} = props;
+  const { className, location } = props;
 
   const classes = useStyles();
 
@@ -100,6 +100,18 @@ const ViewAction = props => {
       testJson:jsonData
     });
   }
+
+  const [openLog, setOpenLog] = React.useState(false);
+  const handleOpenLog = () => {
+
+    setOpenLog(true);
+
+  }
+
+  const closeLog = () =>{
+    setOpenLog(false);
+  }
+
 
   const [openTester, setOpenTester] = React.useState(false);
 
@@ -282,7 +294,7 @@ const ViewAction = props => {
       label: 'Javascript'
     },
     {
-      value: 'python:default',
+      value: 'python:3',
       label: 'Python'
     }
   ];
@@ -293,11 +305,15 @@ const ViewAction = props => {
     if(values.id>0){
       fetchExecutions(values.id);
     }
+    setValues({
+      ...values,
+      runtime:location.isEdit?location.action.runtime:'nodejs:default'
+    });
     
   },[]);
 
   const handleExecutionRefresh = () =>{
-    console.log('refresh');
+    console.log(values);
     if(values.id>0){
       fetchExecutions(values.id);
       console.log('exec fetched '+values.id);
@@ -417,11 +433,11 @@ const ViewAction = props => {
                       margin="dense"
                       name="runtime"
                       onChange={handleChange}
+                      required
                       disabled
                       select
-                      // eslint-disable-next-line react/jsx-sort-props
                       SelectProps={{ native: true }}
-                      value={values.state || ''}
+                      value={values.runtime || ''}
                       variant="outlined"
                     >
                       {codeRuntime.map(option => (
@@ -442,7 +458,8 @@ const ViewAction = props => {
                     <CodeEditor 
                       code={values.code}
                       sendData={handleCodeChange}
-                      readOnly={true}
+                      
+                      mode={values.runtime === 'nodejs:default' ? 'javascript' :'python'}
                     />
                   </Grid>
                 </Grid>
@@ -615,7 +632,7 @@ const ViewAction = props => {
                     
                       </Grid>
                     </Grid>
-                    :<Typography color="primary" style={{'text-align':'center'}}>No Execution Selected</Typography>
+                    :<Typography color="primary" style={{'textAlign':'center'}}>No Execution Selected</Typography>
                 }
               </CardContent>
               <Divider />
@@ -624,7 +641,9 @@ const ViewAction = props => {
                   color="primary"
                   size="small"
                   variant="text"
+                  disabled={!selExec.isSelected}
                   style={{'float':'right'}}
+                  onClick={handleOpenLog}
                 >
                   View Logs <ArrowRightIcon />
                 </Button>
@@ -701,6 +720,26 @@ const ViewAction = props => {
             onClick={handleTestAction}
           >
               Test
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        aria-describedby="log-dialog"
+        aria-labelledby="log-dialog-title"
+        onClose={handleClose}
+        fullWidth="xl"
+        maxWidth="xl"
+        open={openLog}
+      >
+        <DialogContent>
+        {selExec.isSelected ?<LogViewer logs={selExec.executionInstance.metadata?selExec.executionInstance.metadata.logs: ['No logs generated'] } /> : <div><Typography>No logs generated</Typography></div>}
+        </DialogContent>
+        <DialogActions>
+          <Button
+            style={{'color':'red'}}
+            onClick={closeLog}
+          >
+              Cancel
           </Button>
         </DialogActions>
       </Dialog>

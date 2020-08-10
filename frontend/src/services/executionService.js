@@ -35,7 +35,7 @@ class ExecutionService {
     }
     return axios.get(API_URL+"getAll/fiu/"+fiuid,config)
       .then(response =>{
-        console.log(response);
+        //console.log(response);
         return response;
       })
 
