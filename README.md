@@ -34,6 +34,6 @@ We solved this problem by proposing the introduction of a new regulated entity t
 
 ## License
 
-[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
+[![AGPL3 License](https://img.shields.io/badge/License-AGPL3-green.svg)]([https://choosealicense.com/licenses/mit/](https://www.gnu.org/licenses/agpl-3.0.en.html))
 
 
